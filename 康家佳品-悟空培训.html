@@ -471,6 +471,237 @@ h2 {
 }
 
 /* ===========================================
+   ILLUSTRATED SCENE STORYTELLING
+   无录屏场景用员工情绪、悟空动作与对话形成前后反差。
+   =========================================== */
+.scene-story {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 26px;
+    margin-top: 20px;
+}
+.story-card {
+    position: relative;
+    height: 292px;
+    overflow: hidden;
+    border: 2px solid var(--line);
+    border-radius: 24px;
+    background: #dfeafa;
+    box-shadow: 0 18px 42px rgba(9,17,31,.12);
+}
+.story-card > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.story-card.before > img { object-position: 50% 48%; }
+.story-card.after > img { object-position: 50% 50%; }
+.story-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(9,17,31,.03) 46%, rgba(9,17,31,.88) 100%);
+    pointer-events: none;
+}
+.story-state {
+    position: absolute;
+    left: 20px;
+    top: 18px;
+    z-index: 2;
+    padding: 7px 13px;
+    border-radius: 999px;
+    background: rgba(9,17,31,.82);
+    color: white;
+    font: 700 16px var(--font-mono);
+    letter-spacing: .05em;
+}
+.story-card.after .story-state { background: rgba(8,120,255,.9); }
+.story-dialogue {
+    position: absolute;
+    left: 22px;
+    right: 22px;
+    bottom: 18px;
+    z-index: 2;
+    margin: 0;
+    color: white;
+    font-size: 23px;
+    line-height: 1.35;
+    font-weight: 800;
+}
+.flow-row.compact-flow { margin-top: 24px; }
+.flow-row.compact-flow .flow-step {
+    min-height: 104px;
+    padding: 18px 20px;
+}
+.flow-row.compact-flow .flow-step:not(:last-child)::after { top: 28px; }
+.flow-row.compact-flow .flow-step h3 { margin-top: 8px; font-size: 22px; }
+
+.dialogue-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin-top: 26px;
+}
+.dialogue-turn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+.dialogue-turn img {
+    flex: 0 0 auto;
+    width: 74px;
+    height: 74px;
+    object-fit: cover;
+    border: 4px solid white;
+    border-radius: 50%;
+    box-shadow: 0 8px 22px rgba(9,17,31,.16);
+}
+.dialogue-turn img.employee-face { object-position: 50% 32%; }
+.dialogue-turn img.wukong-face { object-fit: contain; background: white; }
+.dialogue-bubble {
+    position: relative;
+    margin: 0;
+    padding: 15px 20px;
+    border: 2px solid var(--line);
+    border-radius: 18px;
+    background: white;
+    color: #33465a;
+    font-size: 20px;
+    line-height: 1.35;
+    font-weight: 700;
+}
+.dialogue-turn.wukong .dialogue-bubble {
+    border-color: #b9d9ff;
+    background: var(--blue-soft);
+    color: #0755aa;
+}
+.dialogue-arrow { color: var(--blue); font-size: 34px; font-weight: 900; }
+
+.card.with-mascot { padding-right: 142px; }
+.card-mascot {
+    position: absolute;
+    right: 24px;
+    top: 22px;
+    width: 92px;
+    height: 92px;
+    object-fit: contain;
+    border-radius: 24px;
+    filter: drop-shadow(0 12px 18px rgba(9,17,31,.2));
+}
+.card.blue-card .card-mascot { box-shadow: 0 0 0 4px rgba(255,255,255,.35); }
+.card-emotion {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 18px;
+    padding: 11px 14px;
+    border-radius: 16px;
+    background: rgba(255,255,255,.16);
+}
+.card-emotion img { width: 66px; height: 66px; object-fit: contain; border-radius: 18px; background: white; }
+.card-emotion span { color: white; font-size: 19px; line-height: 1.35; font-weight: 800; }
+
+.scene-feature-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 690px;
+    gap: 30px;
+    align-items: stretch;
+    margin-top: 26px;
+}
+.scene-feature-layout .story-card { height: 510px; }
+.scene-feature-layout .story-card > img { object-position: 50% 50%; }
+.scene-feature-layout .story-dialogue { font-size: 22px; }
+.decision-list { display: grid; gap: 12px; }
+.decision-step {
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    align-items: center;
+    min-height: 66px;
+    padding: 10px 16px;
+    border: 2px solid var(--line);
+    border-radius: 16px;
+    background: white;
+}
+.decision-step b {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: white;
+    font: 700 16px var(--font-mono);
+}
+.decision-step span { font-size: 21px; line-height: 1.3; font-weight: 800; }
+.tool-callout {
+    margin-top: 14px;
+    padding: 14px 18px;
+    border-left: 7px solid var(--blue);
+    border-radius: 12px;
+    background: var(--blue-soft);
+    color: #27445f;
+    font-size: 18px;
+    line-height: 1.5;
+}
+.tool-callout .tool { font-size: 15px; }
+.scene-safety {
+    margin-top: 12px;
+    padding: 12px 16px;
+    border: 1px solid #edc65a;
+    border-radius: 12px;
+    background: #fff8db;
+    color: #624e0b;
+    font-size: 17px;
+    line-height: 1.42;
+    font-weight: 700;
+}
+.mini-steps { display: grid; gap: 16px; }
+.mini-step {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 16px;
+    align-items: center;
+    min-height: 112px;
+    padding: 18px 20px;
+    border: 2px solid var(--line);
+    border-radius: 18px;
+    background: white;
+}
+.mini-step b {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: white;
+    font: 800 18px var(--font-mono);
+}
+.mini-step strong { display: block; margin-bottom: 5px; font-size: 24px; }
+.mini-step p { margin: 0; color: var(--muted); font-size: 19px; line-height: 1.4; }
+.analysis-dialogue { justify-content: flex-start; margin-top: 28px; }
+.analysis-dialogue .dialogue-bubble { max-width: 600px; font-size: 21px; }
+.safety-box.with-wukong { position: relative; padding-right: 148px; min-height: 92px; display: flex; align-items: center; }
+.safety-box.with-wukong img {
+    position: absolute;
+    right: 22px;
+    bottom: -4px;
+    width: 102px;
+    height: 102px;
+    object-fit: contain;
+    border-radius: 22px;
+}
+.delivery-layout { grid-template-columns: 660px minmax(0, 1fr); }
+.delivery-cards { display: grid; gap: 16px; }
+.delivery-cards .card { padding: 24px 28px; }
+.delivery-cards .card h3 { font-size: 27px; }
+.delivery-cards .card p { font-size: 20px; }
+.delivery-layout .story-card { height: 520px; }
+
+/* ===========================================
    COVER / SECTION SLIDES
    =========================================== */
 .cover-slide {
@@ -1175,14 +1406,26 @@ body.editing [contenteditable="true"] { outline: 2px dashed var(--yellow); outli
     <div class="slide-inner">
         <div class="eyebrow reveal">SCENE 02 · 经营管理</div>
         <h2 class="reveal d1">从“人查数据”到“数据找人”</h2>
-        <p class="lead reveal d1">经营周报不再依赖财务跨系统导出和手工拼表，悟空可以持续抓取、汇总和监测关键指标。</p>
-        <div class="flow-row reveal d2">
+        <p class="lead reveal d1" style="margin-bottom:20px;">经营周报不再依赖财务跨系统导出和手工拼表，悟空可以持续抓取、汇总和监测关键指标。</p>
+        <div class="scene-story reveal d2">
+            <figure class="story-card before">
+                <img src="ppt-assets/characters/员工-忙乱.png" alt="员工被报表和系统消息包围，十分疲惫">
+                <span class="story-state">没有悟空 · 情绪 −2</span>
+                <figcaption class="story-dialogue">员工：“又要导四张表，今天别想下班了……”</figcaption>
+            </figure>
+            <figure class="story-card after">
+                <img src="ppt-assets/characters/员工悟空-轻松完成.png" alt="悟空帮助员工自动汇总经营数据">
+                <span class="story-state">悟空接手 · 情绪 +2</span>
+                <figcaption class="story-dialogue">悟空：“我来汇总，异常再叫你确认。”</figcaption>
+            </figure>
+        </div>
+        <div class="flow-row compact-flow reveal d3">
             <div class="flow-step"><span>01 / 连接</span><h3>ERP、CRM、钉钉审批</h3></div>
             <div class="flow-step"><span>02 / 汇总</span><h3>收入、成本、库存、人效</h3></div>
             <div class="flow-step"><span>03 / 生成</span><h3>经营日报与周报</h3></div>
             <div class="flow-step"><span>04 / 预警</span><h3>阈值触发，主动提醒</h3></div>
         </div>
-        <div class="quote reveal d3" style="margin-top:42px;font-size:32px;">“本月差旅费用已达到预算 80%，建议暂停非必要出差审批。”</div>
+        <div class="value-strip reveal d4"><b>主动预警</b> “本月差旅费用已达到预算 80%，建议暂停非必要出差审批。”</div>
     </div>
 </section>
 
@@ -1196,6 +1439,7 @@ body.editing [contenteditable="true"] { outline: 2px dashed var(--yellow); outli
                 <span class="pill" style="background:#fff;color:#075ebd;">一句话任务</span>
                 <h3 style="font-size:38px;margin-top:24px;">“查询本月所有已审核采购订单，按供应商汇总。”</h3>
                 <p>悟空拉取数据、生成汇总表，与销售及库存数据交叉比对并标记异常。</p>
+                <div class="card-emotion"><img src="ppt-assets/悟空形象.png" alt="悟空"><span>“采购、销售、库存，我一起查。”</span></div>
             </article>
             <article class="card reveal d3">
                 <h3>调用工具</h3>
@@ -1220,7 +1464,12 @@ body.editing [contenteditable="true"] { outline: 2px dashed var(--yellow); outli
             <div class="arch-link">→</div>
             <article class="arch-node"><span class="number">3</span><strong>返回结果</strong><p>字段信息、审批状态、操作日志与异常线索。</p></article>
         </div>
-        <div class="value-strip reveal d3"><b>无需</b> 记住菜单路径，也无需在多个页面间来回翻找。</div>
+        <div class="dialogue-row reveal d3">
+            <div class="dialogue-turn"><img class="employee-face" src="ppt-assets/characters/员工-忙乱.png" alt="困惑的员工"><p class="dialogue-bubble">“我只记得单据号，不记得在哪个菜单。”</p></div>
+            <span class="dialogue-arrow">→</span>
+            <div class="dialogue-turn wukong"><img class="wukong-face" src="ppt-assets/悟空形象.png" alt="悟空"><p class="dialogue-bubble">“直接告诉我单据号，我把详情和操作日志一起带回来。”</p></div>
+        </div>
+        <div class="value-strip reveal d4"><b>无需</b> 记住菜单路径，也无需在多个页面间来回翻找。</div>
     </div>
 </section>
 
@@ -1300,6 +1549,11 @@ body.editing [contenteditable="true"] { outline: 2px dashed var(--yellow); outli
                 <p>返回数量、库位、批次等实时信息。</p>
             </article>
         </div>
+        <div class="dialogue-row reveal d3">
+            <div class="dialogue-turn"><img class="employee-face" src="ppt-assets/characters/员工-忙乱.png" alt="焦急的员工"><p class="dialogue-bubble">“库存还够不够？我又要登录系统查吗？”</p></div>
+            <span class="dialogue-arrow">→</span>
+            <div class="dialogue-turn wukong"><img class="wukong-face" src="ppt-assets/悟空形象.png" alt="悟空"><p class="dialogue-bubble">“不用等你查，低于安全库存我主动提醒。”</p></div>
+        </div>
         <div class="value-strip reveal d4"><b>变化</b> 从信息滞后、反复登录，变成持续监测与主动预警。</div>
     </div>
 </section>
@@ -1309,18 +1563,22 @@ body.editing [contenteditable="true"] { outline: 2px dashed var(--yellow); outli
     <div class="slide-inner">
         <div class="eyebrow reveal">SCENE 04 · 产品交付</div>
         <h2 class="reveal d1">供应商延期时，悟空先给出影响范围与候选方案</h2>
-        <div class="flow-row reveal d2">
-            <div class="flow-step"><span>01</span><h3>识别延期物料</h3></div>
-            <div class="flow-step"><span>02</span><h3>查询物料与供应商</h3></div>
-            <div class="flow-step"><span>03</span><h3>对比库存、价格和交期</h3></div>
-            <div class="flow-step"><span>04</span><h3>生成应急方案</h3></div>
-            <div class="flow-step"><span>05</span><h3>同步销售调整承诺</h3></div>
+        <div class="scene-feature-layout reveal d2">
+            <div>
+                <div class="decision-list">
+                    <div class="decision-step"><b>01</b><span>识别延期物料与受影响订单</span></div>
+                    <div class="decision-step"><b>02</b><span>对比现有库存、价格和交期</span></div>
+                    <div class="decision-step"><b>03</b><span>生成候选方案，同步销售调整承诺</span></div>
+                </div>
+                <div class="tool-callout"><strong>查询工具：</strong><br><span class="tool">kingdee_query_materials</span> <span class="tool">kingdee_query_partners</span></div>
+                <div class="scene-safety">候选方案需要供应链负责人确认，悟空不替代质量、价格与采购决策。</div>
+            </div>
+            <figure class="story-card after">
+                <img src="ppt-assets/characters/员工悟空-供应链解围.png" alt="悟空为焦虑的员工提供供应链替代方案">
+                <span class="story-state">从“怎么办”到“选哪个”</span>
+                <figcaption class="story-dialogue">悟空：“我找到了 3 条替代路径，你来做最终判断。”</figcaption>
+            </figure>
         </div>
-        <div class="grid-2 reveal d3" style="margin-top:36px;">
-            <article class="card compact"><h3>查询工具</h3><p><span class="tool">kingdee_query_materials</span> <span class="tool">kingdee_query_partners</span></p></article>
-            <article class="card compact yellow"><h3>示例建议</h3><p>A 物料延期 7 天，现有 3 家替代供应商，建议优先评估 B 供应商。</p></article>
-        </div>
-        <div class="safety-box reveal d4" style="margin-top:26px;">候选方案需要供应链负责人确认，悟空不替代质量、价格与采购决策。</div>
     </div>
 </section>
 
@@ -1336,8 +1594,9 @@ body.editing [contenteditable="true"] { outline: 2px dashed var(--yellow); outli
                 <p class="tool">kingdee_query_stock_bills</p>
                 <p>返回单据、状态、物料明细与库位信息。</p>
             </article>
-            <article class="card blue-card reveal d3">
+            <article class="card blue-card with-mascot reveal d3">
                 <h3>确认后执行</h3>
+                <img class="card-mascot" src="ppt-assets/悟空形象.png" alt="悟空">
                 <p>“审核这几张采购入库单。”</p>
                 <p class="tool" style="background:white;">kingdee_audit_bills</p>
                 <div class="check-list" style="margin-top:18px;"><p>明确单据范围</p><p>执行前人工确认</p><p>保留结果与操作记录</p></div>
@@ -1386,14 +1645,19 @@ body.editing [contenteditable="true"] { outline: 2px dashed var(--yellow); outli
     <div class="slide-inner">
         <div class="eyebrow reveal">SCENE 02 · 品牌获客</div>
         <h2 class="reveal d1">一次输入，多部门获得各自需要的版本</h2>
-        <div class="arch reveal d2">
-            <article class="arch-node main"><span class="number" style="background:var(--yellow);color:var(--ink);">1</span><strong>新品信息</strong><p>卖点、参数、交期、常见问题</p></article>
-            <div class="arch-link">→</div>
-            <article class="arch-node"><span class="number">2</span><strong>悟空生成</strong><p>销售话术、售后 FAQ、社群文案、公众号推文</p></article>
-            <div class="arch-link">→</div>
-            <article class="arch-node"><span class="number">3</span><strong>分发与沉淀</strong><p>推送对应群组，收集反馈，建立新品知识库</p></article>
+        <div class="scene-feature-layout reveal d2">
+            <div class="mini-steps">
+                <div class="mini-step"><b>1</b><div><strong>输入一次</strong><p>卖点、参数、交期、常见问题。</p></div></div>
+                <div class="mini-step"><b>2</b><div><strong>悟空改写</strong><p>销售话术、售后 FAQ、社群文案、公众号推文。</p></div></div>
+                <div class="mini-step"><b>3</b><div><strong>分发与沉淀</strong><p>推送对应群组，收集反馈，建立新品知识库。</p></div></div>
+            </div>
+            <figure class="story-card after">
+                <img src="ppt-assets/characters/员工悟空-轻松完成.png" alt="员工与悟空协作生成多部门内容">
+                <span class="story-state">一个事实源 · 多个表达版本</span>
+                <figcaption class="story-dialogue">员工：“终于不用给每个部门重新写一遍了。”</figcaption>
+            </figure>
         </div>
-        <div class="value-strip reveal d3"><b>结果</b> 信息不再卡在某个部门，所有角色随时可以问到统一答案。</div>
+        <div class="value-strip reveal d4"><b>结果</b> 信息不再卡在某个部门，所有角色随时可以问到统一答案。</div>
     </div>
 </section>
 
@@ -1443,6 +1707,7 @@ body.editing [contenteditable="true"] { outline: 2px dashed var(--yellow); outli
                 <p>“查询客户编码 C001 的所有销售订单和信用情况。”</p>
                 <p class="tool" style="background:white;">kingdee_query_sale_orders</p>
                 <p class="tool" style="background:white;">kingdee_query_partners</p>
+                <div class="card-emotion"><img src="ppt-assets/悟空形象.png" alt="悟空"><span>“交易历史和信用风险，已经替你整理好了。”</span></div>
             </article>
             <article class="card reveal d3">
                 <h3>自动生成客户画像</h3>
@@ -1466,7 +1731,11 @@ body.editing [contenteditable="true"] { outline: 2px dashed var(--yellow); outli
             <article class="card yellow reveal d2"><div class="number">02</div><h3>客户异常</h3><p>“某海外客户连续 2 个月未下单，建议主动联系。”</p></article>
             <article class="card green reveal d3"><div class="number">03</div><h3>趋势预测</h3><p>结合历史数据与 Q3 趋势，形成 Q4 预测参考。</p></article>
         </div>
-        <div class="quote reveal d4" style="margin-top:32px;font-size:31px;">“悟空，小家电 B2B 这周的新增客户有多少？”——语音即可查询。</div>
+        <div class="dialogue-row analysis-dialogue reveal d4">
+            <div class="dialogue-turn"><img class="employee-face" src="ppt-assets/characters/员工-忙乱.png" alt="销售员工"><p class="dialogue-bubble">“悟空，小家电 B2B 这周新增客户有多少？”</p></div>
+            <span class="dialogue-arrow">→</span>
+            <div class="dialogue-turn wukong"><img class="wukong-face" src="ppt-assets/悟空形象.png" alt="悟空"><p class="dialogue-bubble">“12 家；华东少 3 家，我把落后原因和风险客户一起标出来了。”</p></div>
+        </div>
     </div>
 </section>
 
@@ -1487,7 +1756,7 @@ body.editing [contenteditable="true"] { outline: 2px dashed var(--yellow); outli
             <article class="card compact yellow"><h3>提交</h3><p class="tool">kingdee_submit_bills</p></article>
             <article class="card compact green"><h3>审核</h3><p class="tool">kingdee_audit_bills</p></article>
         </div>
-        <div class="safety-box reveal d4" style="margin-top:28px;">单据写入与审核属于关键业务动作，必须明确对象、权限与确认点。</div>
+        <div class="safety-box with-wukong reveal d4" style="margin-top:28px;">单据写入与审核属于关键业务动作，必须明确对象、权限与确认点。<img src="ppt-assets/悟空形象.png" alt="悟空提醒确认"></div>
     </div>
 </section>
 
@@ -1496,9 +1765,16 @@ body.editing [contenteditable="true"] { outline: 2px dashed var(--yellow); outli
     <div class="slide-inner">
         <div class="eyebrow reveal">SCENE 05 · 渠道销售</div>
         <h2 class="reveal d1">销售不再做“传话筒”，订单状态直接可问</h2>
-        <div class="grid-2">
-            <article class="card reveal d2"><h3>客户正常查询</h3><p class="quote" style="font-size:27px;padding:22px;">“订单 #20260801 现在什么状态？”</p><p>悟空查询出入库数据：已生产完成，预计 8 月 5 日发货、8 月 8 日到达。</p></article>
-            <article class="card blue-card reveal d3"><h3>异常主动通知</h3><p class="quote" style="font-size:27px;padding:22px;background:rgba(255,255,255,.12);color:white;">“质检发现瑕疵，预计延期 3 天。”</p><p>自动形成通知草案，确认后同步给销售和客户。</p></article>
+        <div class="scene-feature-layout delivery-layout">
+            <div class="delivery-cards">
+                <article class="card reveal d2"><h3>客户正常查询</h3><p class="quote" style="font-size:24px;padding:18px;">“订单 #20260801 现在什么状态？”</p><p>悟空连接订单、入库与发货数据，直接返回预计时间。</p></article>
+                <article class="card blue-card reveal d3"><h3>异常主动通知</h3><p class="quote" style="font-size:24px;padding:18px;background:rgba(255,255,255,.12);color:white;">“质检发现瑕疵，预计延期 3 天。”</p><p>自动形成通知草案，确认后同步给销售和客户。</p></article>
+            </div>
+            <figure class="story-card after reveal-scale d2">
+                <img src="ppt-assets/characters/员工悟空-订单解围.png" alt="悟空打通订单、仓库和物流信息，让员工轻松回复客户">
+                <span class="story-state">焦虑催问 → 清晰可答</span>
+                <figcaption class="story-dialogue">悟空：“订单、仓库、物流我都连上了，你不用再当传话筒。”</figcaption>
+            </figure>
         </div>
         <div class="value-strip reveal d4"><b>能力</b> 通过 <span class="mono">kingdee_query_stock_bills</span> 连接订单、入库与发货状态。</div>
     </div>
