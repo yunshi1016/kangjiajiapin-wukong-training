@@ -1,0 +1,1980 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>悟空——让 AI 真正帮你“干活”｜康家佳品专场</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Manrope:wght@400;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ===========================================
+   THEME TOKENS — A「钉钉蓝·执行力」
+   修改这些变量即可统一调整整套配色与字号。
+   =========================================== */
+:root {
+    --stage-bg: #0b111c;
+    --slide-bg: #f5f7fa;
+    --paper: #ffffff;
+    --ink: #09111f;
+    --muted: #5f6c7b;
+    --line: #d9e1ec;
+    --blue: #0878ff;
+    --blue-deep: #074ea8;
+    --blue-soft: #eaf3ff;
+    --yellow: #ffbc00;
+    --green: #19a66a;
+    --red: #ec4b4b;
+    --font-display: "Noto Sans SC", sans-serif;
+    --font-body: "Noto Sans SC", sans-serif;
+    --font-mono: "IBM Plex Mono", monospace;
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --duration: .48s;
+}
+
+/* ===========================================
+   RESET
+   =========================================== */
+* { box-sizing: border-box; }
+button, input { font: inherit; }
+body { font-family: var(--font-body); color: var(--ink); }
+a { color: inherit; }
+strong { font-weight: 800; }
+
+/* ===========================================
+   FIXED 16:9 STAGE: MANDATORY BASE STYLES
+   Include this ENTIRE file in every presentation.
+   Slides are authored at 1920×1080 and scaled as a whole.
+   =========================================== */
+
+/* 1. Lock the browser viewport */
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: var(--stage-bg, #000);
+}
+
+/* 2. Full-window deck viewport */
+.deck-viewport {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    background: var(--stage-bg, #000);
+}
+
+/* 3. Fixed 16:9 design canvas.
+   JavaScript sets transform: translate(...) scale(...). */
+.deck-stage {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    transform-origin: 0 0;
+    background: var(--slide-bg, #fff);
+}
+
+/* 4. Slides stack inside the fixed stage.
+   Content must be laid out at 1920×1080, not reflowed per device. */
+.slide {
+    position: absolute;
+    inset: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    background: var(--slide-bg, #fff);
+}
+
+.slide.active,
+.slide.visible {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+}
+
+/* 5. Keep media inside authored slide bounds */
+img,
+video,
+canvas,
+svg {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* 6. Presentation chrome stays outside the slide design system */
+.deck-controls {
+    position: fixed;
+    left: 50%;
+    bottom: 22px;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+
+/* 7. Print one fixed-size slide per page */
+@media print {
+    html,
+    body {
+        width: 1920px;
+        height: auto;
+        overflow: visible;
+        background: #fff;
+    }
+
+    .deck-viewport {
+        position: static;
+        overflow: visible;
+        background: #fff;
+    }
+
+    .deck-stage {
+        position: static;
+        width: auto;
+        height: auto;
+        transform: none !important;
+        background: none;
+    }
+
+    .slide {
+        position: relative;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        width: 1920px;
+        height: 1080px;
+        break-after: page;
+        page-break-after: always;
+    }
+
+    .slide:last-child {
+        break-after: auto;
+        page-break-after: auto;
+    }
+
+    .deck-controls {
+        display: none !important;
+    }
+}
+
+/* 8. Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.2s !important;
+    }
+}
+
+/* ===========================================
+   SLIDE CHROME — 每页自动插入钉钉 Logo、章节与页码
+   =========================================== */
+.slide::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(rgba(8, 120, 255, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(8, 120, 255, .035) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: linear-gradient(90deg, #000, transparent 78%);
+    pointer-events: none;
+}
+.brand-lockup {
+    position: absolute;
+    left: 92px;
+    top: 54px;
+    width: 350px;
+    height: auto;
+    z-index: 20;
+}
+.deck-id {
+    position: absolute;
+    right: 94px;
+    top: 70px;
+    z-index: 20;
+    color: #667486;
+    font: 600 19px var(--font-mono);
+    letter-spacing: .14em;
+}
+.slide-number {
+    position: absolute;
+    right: 94px;
+    bottom: 50px;
+    z-index: 20;
+    color: #546273;
+    font: 600 20px var(--font-mono);
+}
+.slide.dark .brand-lockup,
+.slide.section-slide .brand-lockup,
+.slide.closing-slide .brand-lockup {
+    filter: brightness(0) invert(1);
+}
+.slide.dark .deck-id,
+.slide.dark .slide-number,
+.slide.section-slide .deck-id,
+.slide.section-slide .slide-number,
+.slide.cover-slide .deck-id,
+.slide.cover-slide .slide-number,
+.slide.closing-slide .deck-id,
+.slide.closing-slide .slide-number { color: rgba(255,255,255,.76); }
+.slide-inner {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    height: 100%;
+    padding: 142px 108px 92px;
+}
+.top-accent {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 24px;
+    height: 210px;
+    background: var(--yellow);
+}
+
+/* ===========================================
+   TYPOGRAPHY
+   =========================================== */
+.eyebrow {
+    color: var(--blue);
+    font: 700 20px var(--font-mono);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+h1, h2, h3, p { margin-top: 0; }
+h2 {
+    max-width: 1500px;
+    margin-bottom: 24px;
+    font-size: 62px;
+    line-height: 1.14;
+    letter-spacing: -.035em;
+    font-weight: 900;
+}
+.lead {
+    max-width: 1450px;
+    margin-bottom: 38px;
+    color: var(--muted);
+    font-size: 28px;
+    line-height: 1.55;
+    font-weight: 500;
+}
+.big-statement {
+    font-size: 74px;
+    line-height: 1.18;
+    letter-spacing: -.04em;
+    font-weight: 900;
+}
+.accent { color: var(--blue); }
+.yellow-text { color: var(--yellow); }
+.mono { font-family: var(--font-mono); }
+.small { font-size: 21px; line-height: 1.5; color: var(--muted); }
+
+/* ===========================================
+   ANIMATIONS — 专业、快速、克制
+   =========================================== */
+.reveal,
+.reveal-left,
+.reveal-scale {
+    opacity: 0;
+    transition: opacity var(--duration) var(--ease-out-expo),
+                transform var(--duration) var(--ease-out-expo);
+}
+.reveal { transform: translateY(28px); }
+.reveal-left { transform: translateX(-38px); }
+.reveal-scale { transform: scale(.95); }
+.slide.visible .reveal,
+.slide.visible .reveal-left,
+.slide.visible .reveal-scale { opacity: 1; transform: none; }
+.slide.visible .d1 { transition-delay: .08s; }
+.slide.visible .d2 { transition-delay: .16s; }
+.slide.visible .d3 { transition-delay: .24s; }
+.slide.visible .d4 { transition-delay: .32s; }
+
+/* ===========================================
+   REUSABLE LAYOUTS
+   =========================================== */
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 28px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 24px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 22px; }
+.card {
+    position: relative;
+    background: var(--paper);
+    border: 2px solid var(--line);
+    border-radius: 22px;
+    padding: 32px 34px;
+    overflow: hidden;
+}
+.card::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 8px;
+    height: 100%;
+    background: var(--blue);
+}
+.card h3 { margin: 0 0 14px; font-size: 31px; line-height: 1.25; }
+.card p, .card li { font-size: 23px; line-height: 1.52; color: #3d4b5b; }
+.card ul { margin: 0; padding-left: 1.2em; }
+.card li + li { margin-top: 8px; }
+.card.yellow::after { background: var(--yellow); }
+.card.green::after { background: var(--green); }
+.card.dark-card { background: var(--ink); border-color: var(--ink); color: white; }
+.card.dark-card p, .card.dark-card li { color: #d9e5f2; }
+.card.blue-card { background: var(--blue); border-color: var(--blue); color: white; }
+.card.blue-card::after { background: var(--yellow); }
+.card.blue-card p, .card.blue-card li { color: #eaf4ff; }
+/* Blue cards may contain white sub-surfaces. Keep their labels dark enough
+   to remain readable instead of inheriting the pale-on-blue text color. */
+.card.blue-card .tool {
+    background: #ffffff;
+    color: #0752a3;
+}
+.card.blue-card .check-list p {
+    background: #ffffff;
+    color: #2f4358;
+}
+.card.compact { padding: 26px 30px; }
+.card.compact h3 { font-size: 27px; }
+.card.compact p, .card.compact li { font-size: 21px; }
+.number {
+    display: inline-grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 18px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: white;
+    font: 700 21px var(--font-mono);
+}
+.metric {
+    font-size: 58px;
+    line-height: 1;
+    font-weight: 900;
+    color: var(--blue);
+}
+.value-strip {
+    position: absolute;
+    left: 108px;
+    right: 108px;
+    bottom: 74px;
+    min-height: 82px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    padding: 20px 30px;
+    background: var(--ink);
+    color: white;
+    border-left: 10px solid var(--yellow);
+    font-size: 27px;
+    font-weight: 700;
+}
+.value-strip b { color: var(--yellow); }
+.pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 6px 16px;
+    border-radius: 999px;
+    background: var(--blue-soft);
+    color: var(--blue-deep);
+    font: 700 18px var(--font-mono);
+}
+.tool {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 8px;
+    background: #edf3fb;
+    color: #075ebd;
+    font: 600 18px var(--font-mono);
+    overflow-wrap: anywhere;
+}
+.flow-row {
+    display: flex;
+    align-items: stretch;
+    gap: 18px;
+}
+.flow-step {
+    position: relative;
+    flex: 1;
+    min-height: 150px;
+    padding: 26px 24px;
+    background: white;
+    border: 2px solid var(--line);
+    border-radius: 20px;
+}
+.flow-step:not(:last-child)::after {
+    content: "→";
+    position: absolute;
+    right: -27px;
+    top: 48px;
+    z-index: 5;
+    color: var(--blue);
+    font-size: 38px;
+    font-weight: 900;
+}
+.flow-step span { color: var(--blue); font: 700 18px var(--font-mono); }
+.flow-step h3 { margin: 12px 0 0; font-size: 27px; line-height: 1.3; }
+.mascot-corner {
+    position: absolute;
+    right: 92px;
+    bottom: 76px;
+    width: 220px;
+    border-radius: 40px;
+    filter: drop-shadow(0 24px 38px rgba(9,17,31,.18));
+}
+.mascot-small {
+    width: 124px;
+    border-radius: 26px;
+}
+.quote {
+    padding: 38px 48px;
+    border-left: 12px solid var(--yellow);
+    background: var(--blue-soft);
+    font-size: 40px;
+    line-height: 1.5;
+    font-weight: 800;
+}
+.check-list { display: grid; gap: 14px; }
+.check-list p {
+    margin: 0;
+    padding: 16px 20px 16px 58px;
+    position: relative;
+    border-radius: 14px;
+    background: white;
+    border: 1px solid var(--line);
+    font-size: 22px;
+    line-height: 1.42;
+}
+.check-list p::before {
+    content: "✓";
+    position: absolute;
+    left: 19px;
+    top: 14px;
+    color: var(--green);
+    font-size: 24px;
+    font-weight: 900;
+}
+
+/* ===========================================
+   COVER / SECTION SLIDES
+   =========================================== */
+.cover-slide {
+    color: var(--ink);
+    background: #eef4fb url("ppt-assets/悟空企业智能体主视觉.png") center / cover no-repeat;
+}
+.cover-slide::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,.98) 0%, rgba(255,255,255,.94) 41%, rgba(255,255,255,.14) 68%, transparent 100%);
+}
+.cover-copy {
+    position: absolute;
+    left: 92px;
+    top: 212px;
+    z-index: 5;
+    width: 970px;
+}
+.cover-copy .cover-tag {
+    color: var(--blue);
+    font: 700 22px var(--font-mono);
+    letter-spacing: .14em;
+}
+.cover-copy h1 {
+    margin: 34px 0 34px;
+    font-size: 100px;
+    line-height: 1.06;
+    letter-spacing: -.06em;
+    font-weight: 900;
+}
+.cover-copy h1 em { color: var(--blue); font-style: normal; }
+.cover-copy p {
+    padding-left: 26px;
+    border-left: 8px solid var(--yellow);
+    font-size: 33px;
+    line-height: 1.5;
+    font-weight: 700;
+    color: #354457;
+}
+.cover-meta {
+    position: absolute;
+    left: 92px;
+    bottom: 90px;
+    z-index: 5;
+    color: #5a6878;
+    font: 600 20px var(--font-mono);
+    letter-spacing: .08em;
+}
+.section-slide {
+    color: white;
+    background:
+        radial-gradient(circle at 85% 20%, rgba(255,188,0,.18), transparent 26%),
+        linear-gradient(135deg, #052a60 0%, #0878ff 66%, #0d8bff 100%);
+}
+.section-slide::before {
+    background:
+        linear-gradient(rgba(255,255,255,.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px);
+    background-size: 68px 68px;
+    mask-image: none;
+}
+.section-copy {
+    position: absolute;
+    left: 108px;
+    top: 248px;
+    z-index: 5;
+    width: 1160px;
+}
+.section-index {
+    color: var(--yellow);
+    font: 800 27px var(--font-mono);
+    letter-spacing: .16em;
+}
+.section-copy h2 {
+    margin: 24px 0 28px;
+    font-size: 90px;
+    line-height: 1.12;
+    color: white;
+}
+.section-copy p {
+    font-size: 31px;
+    line-height: 1.5;
+    max-width: 980px;
+    color: #e2f0ff;
+}
+.section-mascot {
+    position: absolute;
+    right: 118px;
+    top: 260px;
+    width: 430px;
+    border-radius: 82px;
+    z-index: 4;
+    box-shadow: 0 38px 80px rgba(0,0,0,.28);
+}
+.section-keywords {
+    position: absolute;
+    left: 108px;
+    bottom: 102px;
+    z-index: 5;
+    display: flex;
+    gap: 14px;
+}
+.section-keywords span {
+    padding: 10px 18px;
+    border: 1px solid rgba(255,255,255,.45);
+    border-radius: 999px;
+    color: white;
+    font: 600 19px var(--font-mono);
+}
+
+/* ===========================================
+   VIDEO SLIDES — 真实录屏，原生控件
+   =========================================== */
+.video-layout {
+    display: grid;
+    grid-template-columns: 600px 1fr;
+    gap: 40px;
+    align-items: start;
+}
+.video-copy { padding-top: 8px; }
+.video-copy h2 { font-size: 54px; }
+.video-copy .prompt {
+    margin: 24px 0;
+    padding: 22px 24px;
+    border-radius: 16px;
+    background: var(--blue-soft);
+    color: #094f9f;
+    font-size: 22px;
+    line-height: 1.5;
+    font-weight: 700;
+}
+.video-copy ul { margin: 0; padding-left: 1.2em; }
+.video-copy li { margin-bottom: 12px; color: #3d4b5b; font-size: 22px; line-height: 1.45; }
+.video-frame {
+    position: relative;
+    margin-top: 28px;
+    padding: 14px;
+    border-radius: 24px;
+    background: var(--ink);
+    box-shadow: 0 30px 70px rgba(9,17,31,.22);
+}
+.video-frame video {
+    display: block;
+    width: 100%;
+    height: 610px;
+    object-fit: contain;
+    border-radius: 14px;
+    background: #000;
+}
+.video-label {
+    position: absolute;
+    left: 34px;
+    top: 34px;
+    z-index: 4;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(9,17,31,.82);
+    color: white;
+    font: 600 17px var(--font-mono);
+    pointer-events: none;
+}
+
+/* ===========================================
+   SPECIALIZED DIAGRAMS AND TABLES
+   =========================================== */
+.before-after { display: grid; grid-template-columns: 1fr 150px 1fr; align-items: stretch; gap: 24px; margin-top: 64px; }
+.mode-panel { min-height: 430px; border-radius: 24px; padding: 42px; }
+.mode-panel.old { background: #fff; border: 2px solid var(--line); }
+.mode-panel.new { background: var(--blue); color: white; }
+.mode-panel .mode-tag { font: 700 19px var(--font-mono); letter-spacing: .08em; }
+.mode-panel h3 { margin: 28px 0; font-size: 42px; }
+.mode-panel p { font-size: 25px; line-height: 1.6; }
+.mode-panel.new p { color: #eaf4ff; }
+.vs { display: grid; place-items: center; color: var(--blue); font: 800 36px var(--font-mono); }
+.org-card { min-height: 250px; }
+.org-card .org-name { font-size: 34px; font-weight: 900; margin-bottom: 12px; }
+.org-card .org-dept { color: var(--blue); font-size: 22px; font-weight: 700; margin-bottom: 16px; }
+.concept-card { min-height: 430px; padding-top: 42px; }
+.concept-label {
+    display: inline-block;
+    padding: 11px 16px;
+    background: var(--ink);
+    color: white;
+    border-radius: 9px;
+    font: 700 25px var(--font-mono);
+}
+.concept-card h3 { margin-top: 24px; font-size: 36px; }
+.concept-card p { font-size: 24px; }
+.kpi-line {
+    display: grid;
+    grid-template-columns: 1fr 140px 1fr;
+    align-items: center;
+    margin: 30px 0;
+}
+.kpi-box {
+    padding: 28px;
+    border: 2px solid var(--line);
+    border-radius: 18px;
+    background: white;
+}
+.kpi-box b { display: block; font-size: 31px; margin-bottom: 10px; }
+.kpi-box span { color: var(--muted); font-size: 22px; }
+.kpi-arrow { text-align: center; color: var(--blue); font-size: 52px; font-weight: 900; }
+.arch {
+    display: grid;
+    grid-template-columns: 1fr 160px 1fr 160px 1fr;
+    align-items: center;
+    gap: 18px;
+    margin-top: 48px;
+}
+.arch-node {
+    min-height: 320px;
+    padding: 42px 34px;
+    border-radius: 26px;
+    background: white;
+    border: 2px solid var(--line);
+    text-align: center;
+}
+.arch-node strong { display: block; margin: 24px 0 12px; font-size: 38px; }
+.arch-node p { font-size: 23px; line-height: 1.5; color: var(--muted); }
+.arch-link { text-align: center; color: var(--blue); font-size: 40px; font-weight: 900; }
+.arch-node.main { background: var(--blue); color: white; border-color: var(--blue); }
+.arch-node.main p { color: #e4f0ff; }
+.cli-table, .data-table { width: 100%; border-collapse: separate; border-spacing: 0 12px; }
+.cli-table th, .data-table th {
+    padding: 12px 20px;
+    color: #617083;
+    text-align: left;
+    font: 700 18px var(--font-mono);
+}
+.cli-table td, .data-table td {
+    padding: 18px 20px;
+    background: white;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    font-size: 22px;
+    line-height: 1.35;
+}
+.cli-table td:first-child, .data-table td:first-child { border-left: 1px solid var(--line); border-radius: 14px 0 0 14px; font-weight: 800; }
+.cli-table td:last-child, .data-table td:last-child { border-right: 1px solid var(--line); border-radius: 0 14px 14px 0; }
+.cli-table tr.best td { background: var(--blue); color: white; border-color: var(--blue); }
+.system-map {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    margin-top: 34px;
+}
+.system-card {
+    min-height: 170px;
+    padding: 26px 28px;
+    border-radius: 20px;
+    background: white;
+    border: 2px solid var(--line);
+}
+.system-card b { display: block; margin-bottom: 12px; font-size: 28px; }
+.system-card p { margin: 0; font-size: 21px; line-height: 1.45; color: var(--muted); }
+.tool-columns { display: grid; grid-template-columns: repeat(4,1fr); gap: 22px; margin-top: 28px; }
+.tool-group {
+    min-height: 470px;
+    padding: 28px;
+    border-radius: 22px;
+    background: white;
+    border: 2px solid var(--line);
+}
+.tool-group h3 { margin-bottom: 18px; color: var(--blue); font-size: 28px; }
+.tool-group code {
+    display: block;
+    margin: 10px 0;
+    padding: 10px 12px;
+    border-radius: 9px;
+    background: #eef4fb;
+    color: #174f8f;
+    font: 600 17px/1.3 var(--font-mono);
+    overflow-wrap: anywhere;
+}
+.panorama {
+    display: grid;
+    grid-template-columns: 220px 1.35fr 1fr 1.2fr;
+    gap: 8px;
+    margin-top: 20px;
+}
+.panorama > div {
+    min-height: 110px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 1px solid var(--line);
+    font-size: 20px;
+    line-height: 1.38;
+}
+.panorama .head {
+    min-height: 54px;
+    background: var(--ink);
+    color: white;
+    font: 700 17px var(--font-mono);
+}
+.panorama .row-title {
+    background: var(--blue);
+    color: white;
+    font-size: 25px;
+    font-weight: 800;
+}
+.code-panel {
+    padding: 34px 38px;
+    border-radius: 22px;
+    background: #07101e;
+    color: #d8e9ff;
+    font: 500 21px/1.7 var(--font-mono);
+}
+.code-panel .cmd { color: #68c8ff; }
+.code-panel .comment { color: #7f91a8; }
+.safety-box {
+    padding: 26px 30px;
+    border-radius: 20px;
+    background: #fff8df;
+    border: 2px solid #f1d875;
+    color: #674e00;
+    font-size: 23px;
+    line-height: 1.5;
+}
+
+/* ===========================================
+   RESOURCE APPENDIX SLIDES
+   Official links remain clickable in local and hosted viewing modes.
+   =========================================== */
+.resource-layout {
+    display: grid;
+    grid-template-columns: 470px 1fr;
+    gap: 38px;
+    align-items: stretch;
+    margin-top: 34px;
+}
+.resource-identity {
+    min-height: 560px;
+    padding: 42px;
+    border-radius: 26px;
+    background: var(--blue);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+.resource-identity::after {
+    content: "";
+    position: absolute;
+    width: 340px;
+    height: 340px;
+    right: -120px;
+    bottom: -120px;
+    border: 46px solid rgba(255,255,255,.1);
+    border-radius: 50%;
+}
+.resource-identity .resource-no {
+    color: var(--yellow);
+    font: 800 24px var(--font-mono);
+    letter-spacing: .12em;
+}
+.resource-identity h3 {
+    margin: 150px 0 20px;
+    font-size: 47px;
+    line-height: 1.2;
+}
+.resource-identity p {
+    color: #e6f1ff;
+    font-size: 24px;
+    line-height: 1.55;
+}
+.resource-panel {
+    min-height: 560px;
+    padding: 38px 42px;
+    border: 2px solid var(--line);
+    border-radius: 26px;
+    background: white;
+}
+.resource-panel h3 { margin: 0 0 22px; font-size: 34px; }
+.resource-url {
+    display: block;
+    padding: 20px 22px;
+    border: 2px solid #c9ddf6;
+    border-radius: 16px;
+    background: var(--blue-soft);
+    color: #0756aa;
+    font: 600 22px/1.45 var(--font-mono);
+    word-break: break-all;
+    text-decoration: none;
+}
+.resource-url:hover { border-color: var(--blue); background: #dcecff; }
+.resource-features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 28px;
+}
+.resource-feature {
+    min-height: 178px;
+    padding: 24px;
+    border-radius: 18px;
+    background: #f4f7fb;
+    border: 1px solid var(--line);
+}
+.resource-feature b { display: block; margin-bottom: 12px; color: var(--blue); font-size: 24px; }
+.resource-feature p { margin: 0; color: #405064; font-size: 20px; line-height: 1.45; }
+.resource-note {
+    margin-top: 24px;
+    padding: 18px 22px;
+    border-left: 8px solid var(--yellow);
+    background: #fff8df;
+    color: #695100;
+    font-size: 21px;
+    line-height: 1.5;
+}
+.resource-slide.dark-resource {
+    background: linear-gradient(135deg, #06162b 0%, #063b78 62%, #0878ff 100%);
+    color: white;
+}
+.resource-slide.dark-resource::before {
+    background:
+        linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: none;
+}
+.resource-slide.dark-resource .brand-lockup { filter: brightness(0) invert(1); }
+.resource-slide.dark-resource .deck-id,
+.resource-slide.dark-resource .slide-number { color: rgba(255,255,255,.78); }
+.resource-slide.dark-resource .eyebrow { color: var(--yellow); }
+.resource-slide.dark-resource .lead { color: #d9eaff; }
+.resource-slide.dark-resource .resource-panel { background: rgba(255,255,255,.96); color: var(--ink); border-color: rgba(255,255,255,.36); }
+.resource-slide.dark-resource .resource-identity { background: #03101f; border: 2px solid rgba(255,255,255,.14); }
+
+/* ===========================================
+   CLOSING
+   =========================================== */
+.closing-slide {
+    background: #052a60 url("ppt-assets/悟空企业智能体主视觉.png") center / cover no-repeat;
+    color: white;
+}
+.closing-slide::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(3,28,66,.98), rgba(5,42,96,.88) 48%, rgba(5,42,96,.12) 82%);
+}
+.closing-copy {
+    position: absolute;
+    left: 108px;
+    top: 226px;
+    width: 1040px;
+    z-index: 5;
+}
+.closing-copy blockquote {
+    margin: 0 0 46px;
+    font-size: 62px;
+    line-height: 1.35;
+    font-weight: 900;
+}
+.closing-copy p { font-size: 31px; line-height: 1.55; color: #deecff; }
+.closing-action {
+    display: inline-block;
+    margin-top: 28px;
+    padding: 18px 28px;
+    background: var(--yellow);
+    color: var(--ink);
+    font-size: 26px;
+    font-weight: 900;
+}
+
+/* ===========================================
+   OUT-OF-STAGE CONTROLS
+   =========================================== */
+.deck-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(7,14,25,.82);
+    color: white;
+    opacity: 0;
+    transition: opacity .25s ease;
+    backdrop-filter: blur(12px);
+}
+body:hover .deck-controls, .deck-controls:focus-within { opacity: 1; }
+.deck-controls button {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,.1);
+    color: white;
+    cursor: pointer;
+}
+.deck-controls button:hover { background: var(--blue); }
+#externalCount { min-width: 86px; text-align: center; font: 600 14px var(--font-mono); }
+.edit-hotzone { position: fixed; top: 0; left: 0; width: 80px; height: 80px; z-index: 10000; cursor: pointer; }
+.edit-toggle, .download-toggle {
+    position: fixed;
+    top: 18px;
+    width: 46px;
+    height: 46px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--blue);
+    color: white;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+    z-index: 10001;
+    cursor: pointer;
+}
+.edit-toggle { left: 18px; }
+.download-toggle { left: 72px; background: var(--ink); }
+.edit-toggle.show, .edit-toggle.active,
+.download-toggle.show, .download-toggle.active { opacity: 1; pointer-events: auto; }
+body.editing [contenteditable="true"] { outline: 2px dashed var(--yellow); outline-offset: 5px; cursor: text; }
+.overview {
+    position: fixed;
+    inset: 0;
+    z-index: 20000;
+    display: none;
+    padding: 40px;
+    overflow: auto;
+    background: rgba(4,10,19,.97);
+    color: white;
+}
+.overview.open { display: block; }
+.overview h2 { font-size: 38px; }
+.overview-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 12px; }
+.overview button {
+    min-height: 96px;
+    padding: 18px;
+    border: 1px solid #304159;
+    border-radius: 14px;
+    background: #111d2d;
+    color: white;
+    text-align: left;
+    cursor: pointer;
+}
+.overview button:hover { border-color: var(--blue); background: #0e315d; }
+.overview button b { display: block; margin-bottom: 8px; color: #69b8ff; font: 600 14px var(--font-mono); }
+</style>
+</head>
+
+<body>
+<!-- ===========================================
+     FIXED VIEWPORT AND 1920×1080 STAGE
+     =========================================== -->
+<div class="deck-viewport">
+<main class="deck-stage" id="deckStage" aria-label="康家佳品悟空培训网页 PPT">
+
+<!-- 01 封面 -->
+<section class="slide cover-slide active" data-title="悟空——让 AI 真正帮你“干活”">
+    <div class="top-accent"></div>
+    <div class="cover-copy">
+        <div class="cover-tag reveal">KANGJIAJIAPIN · ENTERPRISE AGENT TRAINING</div>
+        <h1 class="reveal d1">悟空——<br>让 AI 真正帮你<em>“干活”</em></h1>
+        <p class="reveal d2">从对话到执行，企业智能体的新范式<br>康家佳品专场</p>
+    </div>
+    <div class="cover-meta reveal d3">MCP × SKILL × DINGTALK CLI</div>
+</section>
+
+<!-- 02 日常场景 -->
+<section class="slide" data-title="一个全公司通用的日常场景">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">THE FIRST 30 MINUTES</div>
+        <h2 class="reveal d1">早上一到公司，工作已经在排队</h2>
+        <div class="before-after">
+            <article class="mode-panel old reveal d2">
+                <div class="mode-tag">传统做法</div>
+                <h3>人沿着应用跑</h3>
+                <p>3 个会议邀请、5 条待审批、十几条未读消息，还有一堆文档要处理。一个个点开、阅读、处理，半小时过去了。</p>
+            </article>
+            <div class="vs reveal d2">→</div>
+            <article class="mode-panel new reveal d3">
+                <div class="mode-tag">有了悟空</div>
+                <h3>任务自己排好队</h3>
+                <p>说一句：“帮我整理今天的日程和待办。”悟空读取信息、归纳重点并给出下一步。</p>
+            </article>
+        </div>
+        <div class="value-strip reveal d4"><b>核心认知</b> 悟空不是“聊天机器人”，而是能替你推进工作的智能体。</div>
+        <img class="mascot-corner reveal-scale d3" src="ppt-assets/悟空形象.png" alt="悟空形象">
+    </div>
+</section>
+
+<!-- 03 培训定位与组织 -->
+<section class="slide" data-title="本次培训定位与组织架构总览">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">TRAINING MAP</div>
+        <h2 class="reveal d1">不是教操作，而是看清悟空能进入哪些工作</h2>
+        <p class="lead reveal d1">围绕康家佳品四大业务板块的真实工作场景，建立从“能做什么”到“怎么做到”的共同认知。</p>
+        <div class="grid-4">
+            <article class="card org-card reveal d1"><div class="org-name">经营管理</div><div class="org-dept">综管 · 财务</div><p>制度、组织协同、资源管理、经营结果</p></article>
+            <article class="card org-card reveal d2"><div class="org-name">产品交付</div><div class="org-dept">研发 · 供应链 · 质管 · 用服</div><p>需求 → 开发 → 生产 → 质量 → 售后</p></article>
+            <article class="card org-card reveal d3"><div class="org-name">品牌获客</div><div class="org-dept">社群运营 · 品牌推广</div><p>品牌传播、内容营销、活动推广、销售支持</p></article>
+            <article class="card org-card reveal d4"><div class="org-name">渠道销售</div><div class="org-dept">B2B · 海外 · 大客户 · 小画仙</div><p>客户开发、销售转化、业务经营</p></article>
+        </div>
+    </div>
+</section>
+
+<!-- 04 三个核心概念 -->
+<section class="slide" data-title="三个核心技术概念">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">ONE-MINUTE CONCEPTS</div>
+        <h2 class="reveal d1">能连接、会做事、可执行</h2>
+        <div class="grid-3">
+            <article class="card concept-card reveal d1"><span class="concept-label">MCP</span><h3>神经系统</h3><p>让悟空能“伸手”连接金蝶 ERP、CRM、钉钉等系统与工具。</p></article>
+            <article class="card concept-card yellow reveal d2"><span class="concept-label">SKILL</span><h3>专业技能包</h3><p>按需加载业务知识、标准流程与注意事项，让 AI 会按专业方法做事。</p></article>
+            <article class="card concept-card green reveal d3"><span class="concept-label">CLI</span><h3>真正的双手</h3><p>把钉钉功能变成 AI 能理解和调用的命令，查询之后继续执行。</p></article>
+        </div>
+        <div class="value-strip reveal d4"><b>三者结合</b> 悟空成为能感知、会思考、能动手的企业智能体。</div>
+        <img class="mascot-corner reveal-scale d3" src="ppt-assets/悟空形象.png" alt="悟空形象">
+    </div>
+</section>
+
+<!-- 05 金蝶 MCP -->
+<section class="slide" data-title="金蝶云星空 MCP">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">KINGDEE CLOUD MCP</div>
+        <h2 class="reveal d1">打通康家佳品的采购、销售、库存与财务</h2>
+        <div class="kpi-line reveal d2">
+            <div class="kpi-box"><b>以前查库存</b><span>登录金蝶 → 找菜单 → 输入条件 → 查看结果</span><div class="metric">4 步 · 3 分钟</div></div>
+            <div class="kpi-arrow">→</div>
+            <div class="kpi-box"><b>现在查库存</b><span>直接告诉悟空物料编码与查询目标</span><div class="metric">1 句话 · 5 秒</div></div>
+        </div>
+        <div class="grid-4 reveal d3">
+            <article class="card compact"><h3>采购 / 销售</h3><p>订单查询、提交与审核</p></article>
+            <article class="card compact"><h3>库存</h3><p>出入库、即时库存与批次</p></article>
+            <article class="card compact"><h3>基础资料</h3><p>物料、客户与供应商</p></article>
+            <article class="card compact"><h3>安全与扩展</h3><p>官方 WebAPI 认证，13+ 工具</p></article>
+        </div>
+    </div>
+</section>
+
+<!-- 06 Skill -->
+<section class="slide" data-title="Skill——悟空的专业技能包">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">SKILL</div>
+        <h2 class="reveal d1">把专业员工的操作说明书交给 AI</h2>
+        <p class="lead reveal d1">Skill 本质是一份结构化指令文档：告诉 AI 能用哪些命令、该怎么调、有哪些规则和注意事项。</p>
+        <div class="grid-3">
+            <article class="card reveal d1"><div class="number">01</div><h3>听得懂专业术语</h3><p>销售订单、采购入库、BOM、预算、质检批次。</p></article>
+            <article class="card yellow reveal d2"><div class="number">02</div><h3>会调用标准流程</h3><p>新建审批、生成报表、归档资料、触发提醒。</p></article>
+            <article class="card green reveal d3"><div class="number">03</div><h3>遵循业务规则</h3><p>例如预算超过 80% 自动预警，但关键动作仍由人确认。</p></article>
+        </div>
+        <div class="value-strip reveal d4"><b>生态</b> 钉钉 CLI 已内置 19 个核心 Skill；阿里 ToB 能力将持续以 Skill 形式接入。</div>
+    </div>
+</section>
+
+<!-- 07 钉钉 CLI -->
+<section class="slide" data-title="钉钉 CLI——悟空的双手">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">DINGTALK CLI</div>
+        <h2 class="reveal d1">不是给旧软件加助手，而是为 AI 造原生操作语言</h2>
+        <div class="grid-3">
+            <article class="card dark-card reveal d1"><div class="metric yellow-text">11</div><h3>大业务领域</h3><p>消息、文档、日历、审批、表格、会议等。</p></article>
+            <article class="card blue-card reveal d2"><div class="metric yellow-text">200+</div><h3>精选命令</h3><p>AI 可理解、可组合、可追踪的操作入口。</p></article>
+            <article class="card reveal d3"><div class="metric">19</div><h3>Agent Skill</h3><p>覆盖高频企业协同与业务执行场景。</p></article>
+        </div>
+        <div class="quote reveal d4" style="margin-top:32px;">CLI 就像给悟空一根金箍棒——以前只能看，现在能够操作。</div>
+        <img class="mascot-corner reveal-scale d3" src="ppt-assets/悟空形象.png" alt="悟空形象">
+    </div>
+</section>
+
+<!-- 08 经营管理总览 -->
+<section class="slide section-slide" data-title="经营管理板块总览">
+    <div class="section-copy">
+        <div class="section-index reveal">02 / 经营管理</div>
+        <h2 class="reveal d1">让制度自动闭环，<br>让数据主动找人</h2>
+        <p class="reveal d2">综管与财务：制度发文、预算管理、人力调配、经营分析、流程审批与财务对账。</p>
+    </div>
+    <div class="section-keywords reveal d3"><span>制度落地</span><span>资源管理</span><span>经营预警</span><span>财务对账</span></div>
+    <img class="section-mascot reveal-scale d2" src="ppt-assets/悟空形象.png" alt="悟空形象">
+</section>
+
+<!-- 09 制度发文视频 -->
+<section class="slide" data-title="制度发文与落地追踪">
+    <div class="slide-inner">
+        <div class="video-layout">
+            <div class="video-copy">
+                <div class="eyebrow reveal">SCENE 01 · 经营管理</div>
+                <h2 class="reveal d1">制度发文与落地追踪</h2>
+                <div class="prompt reveal d2">“悟空，把《2026 年差旅报销标准》发给全员，并收集反馈。”</div>
+                <ul class="reveal d3">
+                    <li>连接钉钉文档并发送全员消息</li>
+                    <li>追踪已读 / 未读并汇总疑问</li>
+                    <li>7 天提醒未读人员，15 天生成执行报告</li>
+                </ul>
+                <div class="pill reveal d4">人追制度 → 制度自动闭环</div>
+            </div>
+            <div class="video-frame reveal-scale d2">
+                <span class="video-label">真实录屏 · 点击播放</span>
+                <video controls playsinline preload="metadata" poster="ppt-assets/posters/制度发文.png"><source src="ppt-assets/video/制度发文.m4v" type="video/mp4"></video>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 10 经营数据 -->
+<section class="slide" data-title="经营数据自动汇总与预警">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">SCENE 02 · 经营管理</div>
+        <h2 class="reveal d1">从“人查数据”到“数据找人”</h2>
+        <p class="lead reveal d1">经营周报不再依赖财务跨系统导出和手工拼表，悟空可以持续抓取、汇总和监测关键指标。</p>
+        <div class="flow-row reveal d2">
+            <div class="flow-step"><span>01 / 连接</span><h3>ERP、CRM、钉钉审批</h3></div>
+            <div class="flow-step"><span>02 / 汇总</span><h3>收入、成本、库存、人效</h3></div>
+            <div class="flow-step"><span>03 / 生成</span><h3>经营日报与周报</h3></div>
+            <div class="flow-step"><span>04 / 预警</span><h3>阈值触发，主动提醒</h3></div>
+        </div>
+        <div class="quote reveal d3" style="margin-top:42px;font-size:32px;">“本月差旅费用已达到预算 80%，建议暂停非必要出差审批。”</div>
+    </div>
+</section>
+
+<!-- 11 财务对账 -->
+<section class="slide" data-title="财务数据一键查询与对账">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">SCENE 03 · KINGDEE MCP</div>
+        <h2 class="reveal d1">采购、销售、库存，AI 自动查、自动对</h2>
+        <div class="grid-2">
+            <article class="card blue-card reveal d2">
+                <span class="pill" style="background:#fff;color:#075ebd;">一句话任务</span>
+                <h3 style="font-size:38px;margin-top:24px;">“查询本月所有已审核采购订单，按供应商汇总。”</h3>
+                <p>悟空拉取数据、生成汇总表，与销售及库存数据交叉比对并标记异常。</p>
+            </article>
+            <article class="card reveal d3">
+                <h3>调用工具</h3>
+                <p class="tool">kingdee_query_purchase_orders</p>
+                <p class="small mono">filter_string: FDocumentStatus='C' AND FDate&gt;='2026-07-01'</p>
+                <div class="check-list" style="margin-top:18px;"><p>按供应商聚合</p><p>交叉核对金额与状态</p><p>输出异常明细</p></div>
+            </article>
+        </div>
+        <div class="value-strip reveal d4"><b>价值</b> 月底对账从“多人反复导表”变成“AI 先核对、人处理异常”。</div>
+    </div>
+</section>
+
+<!-- 12 通用单据 -->
+<section class="slide" data-title="通用单据查询与详情查看">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">SCENE 04 · KINGDEE MCP</div>
+        <h2 class="reveal d1">任何单据，一句话调取完整信息</h2>
+        <div class="arch reveal d2">
+            <article class="arch-node"><span class="number">1</span><strong>告诉悟空</strong><p>“查看单据 F123456 的完整详情。”</p></article>
+            <div class="arch-link">→</div>
+            <article class="arch-node main"><span class="number" style="background:var(--yellow);color:var(--ink);">2</span><strong>调用工具</strong><p class="mono">kingdee_view_bill<br>kingdee_query_bills</p></article>
+            <div class="arch-link">→</div>
+            <article class="arch-node"><span class="number">3</span><strong>返回结果</strong><p>字段信息、审批状态、操作日志与异常线索。</p></article>
+        </div>
+        <div class="value-strip reveal d3"><b>无需</b> 记住菜单路径，也无需在多个页面间来回翻找。</div>
+    </div>
+</section>
+
+<!-- 13 产品交付总览 -->
+<section class="slide section-slide" data-title="产品交付板块总览">
+    <div class="section-copy">
+        <div class="section-index reveal">03 / 产品交付</div>
+        <h2 class="reveal d1">让信息沿着完整链条<br>持续向前流动</h2>
+        <p class="reveal d2">研发、供应链、质管与用服：需求定义 → 产品开发 → 生产交付 → 质量控制 → 售后服务。</p>
+    </div>
+    <div class="section-keywords reveal d3"><span>研发排期</span><span>物料采购</span><span>库存管理</span><span>质量闭环</span><span>售后工单</span></div>
+    <img class="section-mascot reveal-scale d2" src="ppt-assets/悟空形象.png" alt="悟空形象">
+</section>
+
+<!-- 14 客诉分析视频 -->
+<section class="slide" data-title="售后问题自动分析与研发改进">
+    <div class="slide-inner">
+        <div class="video-layout">
+            <div class="video-copy">
+                <div class="eyebrow reveal">SCENE 01 · 产品交付</div>
+                <h2 class="reveal d1">售后问题自动分析，推动研发改进</h2>
+                <div class="prompt reveal d2">识别“蒸煮不均匀”“跳闸”等高频投诉，关联 SKU、质检记录与生产批次。</div>
+                <ul class="reveal d3">
+                    <li>自动识别投诉趋势和异常 SKU</li>
+                    <li>关联质量与供应链批次</li>
+                    <li>生成分析报告并推送研发负责人</li>
+                </ul>
+                <div class="pill reveal d4">几天 → 几分钟</div>
+            </div>
+            <div class="video-frame reveal-scale d2">
+                <span class="video-label">真实录屏 · 点击播放</span>
+                <video controls playsinline preload="metadata" poster="ppt-assets/posters/客诉分析.png"><source src="ppt-assets/video/客诉分析.m4v" type="video/mp4"></video>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 15 知识库视频 -->
+<section class="slide" data-title="研发知识库与经验沉淀">
+    <div class="slide-inner">
+        <div class="video-layout">
+            <div class="video-copy">
+                <div class="eyebrow reveal">SCENE 02 · 产品交付</div>
+                <h2 class="reveal d1">研发知识库与经验沉淀</h2>
+                <div class="prompt reveal d2">“之前空气炸锅的温控问题是怎么解决的？”</div>
+                <ul class="reveal d3">
+                    <li>自动整理复盘与技术文档</li>
+                    <li>按品类、结构、电子、软件分类</li>
+                    <li>生成“产品开发避坑指南”</li>
+                    <li>定时归档，让新人随时可问</li>
+                </ul>
+                <div class="pill reveal d4">人找知识 → 知识找人</div>
+            </div>
+            <div class="video-frame reveal-scale d2">
+                <span class="video-label">真实录屏 · 点击播放</span>
+                <video controls playsinline preload="metadata" poster="ppt-assets/posters/知识整理.png"><source src="ppt-assets/video/知识整理.m4v" type="video/mp4"></video>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 16 库存 -->
+<section class="slide" data-title="即时库存实时查询与预警">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">SCENE 03 · KINGDEE MCP</div>
+        <h2 class="reveal d1">库存不再等人查询，而是主动告诉人</h2>
+        <div class="grid-2">
+            <article class="card blue-card reveal d2">
+                <div class="metric yellow-text">09:00</div>
+                <h3>每天自动检查</h3>
+                <p>扫描所有物料库存，低于安全库存时主动提醒负责人。</p>
+            </article>
+            <article class="card reveal d3">
+                <h3>一句话即时查询</h3>
+                <p class="quote" style="font-size:28px;padding:24px;">“查一下物料编码 10001 的即时库存。”</p>
+                <p class="tool">kingdee_query_inventory</p>
+                <p>返回数量、库位、批次等实时信息。</p>
+            </article>
+        </div>
+        <div class="value-strip reveal d4"><b>变化</b> 从信息滞后、反复登录，变成持续监测与主动预警。</div>
+    </div>
+</section>
+
+<!-- 17 供应链异常 -->
+<section class="slide" data-title="供应链异常自动应对">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">SCENE 04 · 产品交付</div>
+        <h2 class="reveal d1">供应商延期时，悟空先给出影响范围与候选方案</h2>
+        <div class="flow-row reveal d2">
+            <div class="flow-step"><span>01</span><h3>识别延期物料</h3></div>
+            <div class="flow-step"><span>02</span><h3>查询物料与供应商</h3></div>
+            <div class="flow-step"><span>03</span><h3>对比库存、价格和交期</h3></div>
+            <div class="flow-step"><span>04</span><h3>生成应急方案</h3></div>
+            <div class="flow-step"><span>05</span><h3>同步销售调整承诺</h3></div>
+        </div>
+        <div class="grid-2 reveal d3" style="margin-top:36px;">
+            <article class="card compact"><h3>查询工具</h3><p><span class="tool">kingdee_query_materials</span> <span class="tool">kingdee_query_partners</span></p></article>
+            <article class="card compact yellow"><h3>示例建议</h3><p>A 物料延期 7 天，现有 3 家替代供应商，建议优先评估 B 供应商。</p></article>
+        </div>
+        <div class="safety-box reveal d4" style="margin-top:26px;">候选方案需要供应链负责人确认，悟空不替代质量、价格与采购决策。</div>
+    </div>
+</section>
+
+<!-- 18 出入库 -->
+<section class="slide" data-title="出入库单据查询与追踪">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">SCENE 05 · KINGDEE MCP</div>
+        <h2 class="reveal d1">出入库全程可视、可查、可操作</h2>
+        <div class="grid-2">
+            <article class="card reveal d2">
+                <h3>查询与追踪</h3>
+                <p class="quote" style="font-size:27px;padding:22px;">“查询本月所有未审核的采购入库单。”</p>
+                <p class="tool">kingdee_query_stock_bills</p>
+                <p>返回单据、状态、物料明细与库位信息。</p>
+            </article>
+            <article class="card blue-card reveal d3">
+                <h3>确认后执行</h3>
+                <p>“审核这几张采购入库单。”</p>
+                <p class="tool" style="background:white;">kingdee_audit_bills</p>
+                <div class="check-list" style="margin-top:18px;"><p>明确单据范围</p><p>执行前人工确认</p><p>保留结果与操作记录</p></div>
+            </article>
+        </div>
+        <div class="value-strip reveal d4"><b>效率</b> 无需登录金蝶反复切换菜单，同时保留关键动作确认。</div>
+    </div>
+</section>
+
+<!-- 19 品牌获客总览 -->
+<section class="slide section-slide" data-title="品牌获客板块总览">
+    <div class="section-copy">
+        <div class="section-index reveal">04 / 品牌获客</div>
+        <h2 class="reveal d1">让内容生产更快，<br>让跨部门信息同步输出</h2>
+        <p class="reveal d2">社群运营与品牌推广：内容创作、活动策划、素材制作、品牌传播与销售支持。</p>
+    </div>
+    <div class="section-keywords reveal d3"><span>内容创作</span><span>活动策划</span><span>竞品动态</span><span>新品协同</span></div>
+    <img class="section-mascot reveal-scale d2" src="ppt-assets/悟空形象.png" alt="悟空形象">
+</section>
+
+<!-- 20 社媒内容视频 -->
+<section class="slide" data-title="内容创作与活动策划提效">
+    <div class="slide-inner">
+        <div class="video-layout">
+            <div class="video-copy">
+                <div class="eyebrow reveal">SCENE 01 · 品牌获客</div>
+                <h2 class="reveal d1">从零开始写，变成 AI 初稿 + 人工精修</h2>
+                <div class="prompt reveal d2">输入产品卖点和平台，自动生成小红书、公众号、朋友圈等多版本文案。</div>
+                <ul class="reveal d3">
+                    <li>结合热点生成活动方案框架</li>
+                    <li>抓取竞品动态并给出跟进建议</li>
+                    <li>保留品牌人员的审核与最终表达</li>
+                </ul>
+                <div class="pill reveal d4">目标：效率提升 3 倍</div>
+            </div>
+            <div class="video-frame reveal-scale d2">
+                <span class="video-label">真实录屏 · 点击播放</span>
+                <video controls playsinline preload="metadata" poster="ppt-assets/posters/社媒内容.png"><source src="ppt-assets/video/社媒内容.m4v" type="video/mp4"></video>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 21 新品协同 -->
+<section class="slide" data-title="新品上市的跨部门协同">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">SCENE 02 · 品牌获客</div>
+        <h2 class="reveal d1">一次输入，多部门获得各自需要的版本</h2>
+        <div class="arch reveal d2">
+            <article class="arch-node main"><span class="number" style="background:var(--yellow);color:var(--ink);">1</span><strong>新品信息</strong><p>卖点、参数、交期、常见问题</p></article>
+            <div class="arch-link">→</div>
+            <article class="arch-node"><span class="number">2</span><strong>悟空生成</strong><p>销售话术、售后 FAQ、社群文案、公众号推文</p></article>
+            <div class="arch-link">→</div>
+            <article class="arch-node"><span class="number">3</span><strong>分发与沉淀</strong><p>推送对应群组，收集反馈，建立新品知识库</p></article>
+        </div>
+        <div class="value-strip reveal d3"><b>结果</b> 信息不再卡在某个部门，所有角色随时可以问到统一答案。</div>
+    </div>
+</section>
+
+<!-- 22 渠道销售总览 -->
+<section class="slide section-slide" data-title="渠道销售板块总览">
+    <div class="section-copy">
+        <div class="section-index reveal">05 / 渠道销售</div>
+        <h2 class="reveal d1">让信息跟着销售走，<br>让判断有数据支撑</h2>
+        <p class="reveal d2">小家电 B2B、厨电 B2B、海外、大客户与小画仙：客户开发、销售转化和业务经营。</p>
+    </div>
+    <div class="section-keywords reveal d3"><span>客户拜访</span><span>报价合同</span><span>订单跟进</span><span>销售预测</span><span>客户档案</span></div>
+    <img class="section-mascot reveal-scale d2" src="ppt-assets/悟空形象.png" alt="悟空形象">
+</section>
+
+<!-- 23 拜访准备视频 -->
+<section class="slide" data-title="客户拜访前的 AI 军师">
+    <div class="slide-inner">
+        <div class="video-layout">
+            <div class="video-copy">
+                <div class="eyebrow reveal">SCENE 01 · 渠道销售</div>
+                <h2 class="reveal d1">客户拜访前的“AI 军师”</h2>
+                <div class="prompt reveal d2">“帮我准备明天拜访 XX 客户的资料。”</div>
+                <ul class="reveal d3">
+                    <li>企业背景与行业动态</li>
+                    <li>历史订单、售后记录和沟通摘要</li>
+                    <li>采购变化、竞品线索与建议问题</li>
+                </ul>
+                <div class="pill reveal d4">5 分钟完成 1 小时准备</div>
+                <p class="small reveal d4" style="margin-top:18px;">可接入天眼查 MCP：ai.tianyancha.com</p>
+            </div>
+            <div class="video-frame reveal-scale d2">
+                <span class="video-label">真实录屏 · 点击播放</span>
+                <video controls playsinline preload="metadata" poster="ppt-assets/posters/拜访准备.png"><source src="ppt-assets/video/拜访准备.m4v" type="video/mp4"></video>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 24 客户历史 -->
+<section class="slide" data-title="客户历史交易一键调取">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">SCENE 02 · KINGDEE MCP</div>
+        <h2 class="reveal d1">拜访前 1 分钟，掌握客户交易历史</h2>
+        <div class="grid-2">
+            <article class="card blue-card reveal d2">
+                <h3>一句话查询</h3>
+                <p>“查询客户编码 C001 的所有销售订单和信用情况。”</p>
+                <p class="tool" style="background:white;">kingdee_query_sale_orders</p>
+                <p class="tool" style="background:white;">kingdee_query_partners</p>
+            </article>
+            <article class="card reveal d3">
+                <h3>自动生成客户画像</h3>
+                <div class="grid-2" style="gap:12px;">
+                    <p class="pill">历史订单</p><p class="pill">金额与状态</p><p class="pill">信用额度</p><p class="pill">逾期情况</p>
+                </div>
+                <p style="margin-top:24px;">结果可直接推送至销售手机端。</p>
+            </article>
+        </div>
+        <div class="value-strip reveal d4"><b>销售体验</b> 不再翻多个系统，让每次拜访真正有备而来。</div>
+    </div>
+</section>
+
+<!-- 25 销售分析 -->
+<section class="slide" data-title="销售数据分析与风险预警">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">SCENE 03 · 渠道销售</div>
+        <h2 class="reveal d1">AI 不只展示报表，还解释变化并提醒风险</h2>
+        <div class="grid-3">
+            <article class="card reveal d1"><div class="number">01</div><h3>目标完成率</h3><p>“厨电 B2B 本月完成率 85%，华东区进度落后。”</p></article>
+            <article class="card yellow reveal d2"><div class="number">02</div><h3>客户异常</h3><p>“某海外客户连续 2 个月未下单，建议主动联系。”</p></article>
+            <article class="card green reveal d3"><div class="number">03</div><h3>趋势预测</h3><p>结合历史数据与 Q3 趋势，形成 Q4 预测参考。</p></article>
+        </div>
+        <div class="quote reveal d4" style="margin-top:32px;font-size:31px;">“悟空，小家电 B2B 这周的新增客户有多少？”——语音即可查询。</div>
+    </div>
+</section>
+
+<!-- 26 销售订单 -->
+<section class="slide" data-title="销售订单全流程 AI 操作">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">SCENE 04 · KINGDEE MCP</div>
+        <h2 class="reveal d1">从填单、提交到审核，一句话发起</h2>
+        <div class="flow-row reveal d2">
+            <div class="flow-step"><span>01</span><h3>描述客户、物料与数量</h3></div>
+            <div class="flow-step"><span>02</span><h3>创建销售订单</h3></div>
+            <div class="flow-step"><span>03</span><h3>返回订单号</h3></div>
+            <div class="flow-step"><span>04</span><h3>人工确认</h3></div>
+            <div class="flow-step"><span>05</span><h3>提交与审核</h3></div>
+        </div>
+        <div class="grid-3 reveal d3" style="margin-top:38px;">
+            <article class="card compact"><h3>新建 / 修改</h3><p class="tool">kingdee_save_bill</p></article>
+            <article class="card compact yellow"><h3>提交</h3><p class="tool">kingdee_submit_bills</p></article>
+            <article class="card compact green"><h3>审核</h3><p class="tool">kingdee_audit_bills</p></article>
+        </div>
+        <div class="safety-box reveal d4" style="margin-top:28px;">单据写入与审核属于关键业务动作，必须明确对象、权限与确认点。</div>
+    </div>
+</section>
+
+<!-- 27 交付可视 -->
+<section class="slide" data-title="订单到交付全流程可视">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">SCENE 05 · 渠道销售</div>
+        <h2 class="reveal d1">销售不再做“传话筒”，订单状态直接可问</h2>
+        <div class="grid-2">
+            <article class="card reveal d2"><h3>客户正常查询</h3><p class="quote" style="font-size:27px;padding:22px;">“订单 #20260801 现在什么状态？”</p><p>悟空查询出入库数据：已生产完成，预计 8 月 5 日发货、8 月 8 日到达。</p></article>
+            <article class="card blue-card reveal d3"><h3>异常主动通知</h3><p class="quote" style="font-size:27px;padding:22px;background:rgba(255,255,255,.12);color:white;">“质检发现瑕疵，预计延期 3 天。”</p><p>自动形成通知草案，确认后同步给销售和客户。</p></article>
+        </div>
+        <div class="value-strip reveal d4"><b>能力</b> 通过 <span class="mono">kingdee_query_stock_bills</span> 连接订单、入库与发货状态。</div>
+    </div>
+</section>
+
+<!-- 28 海外翻译视频 -->
+<section class="slide" data-title="海外业务跨时区与跨语言支持">
+    <div class="slide-inner">
+        <div class="video-layout">
+            <div class="video-copy">
+                <div class="eyebrow reveal">SCENE 06 · 渠道销售</div>
+                <h2 class="reveal d1">跨语言、跨时区，也能保持同样节奏</h2>
+                <div class="prompt reveal d2">“将这份产品报价单翻译成西班牙语。”</div>
+                <ul class="reveal d3">
+                    <li>读取并翻译报价单</li>
+                    <li>生成海外会议纪要并中文归档</li>
+                    <li>按客户时区提醒回复窗口</li>
+                </ul>
+                <div class="pill reveal d4">让海外业务像国内一样高效</div>
+            </div>
+            <div class="video-frame reveal-scale d2">
+                <span class="video-label">真实录屏 · 点击播放</span>
+                <video controls playsinline preload="metadata" poster="ppt-assets/posters/报价翻译.png"><source src="ppt-assets/video/报价翻译.m4v" type="video/mp4"></video>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 29 技术能力回顾 -->
+<section class="slide section-slide" data-title="三个核心技术能力回顾">
+    <div class="section-copy">
+        <div class="section-index reveal">06 / 技术能力</div>
+        <h2 class="reveal d1">场景背后，是三层能力<br>共同完成工作</h2>
+        <p class="reveal d2">MCP 连接系统，Skill 固化方法，钉钉 CLI 执行操作。</p>
+    </div>
+    <div class="section-keywords reveal d3"><span>MCP · 神经系统</span><span>Skill · 专业技能包</span><span>CLI · 双手</span></div>
+    <img class="section-mascot reveal-scale d2" src="ppt-assets/悟空形象.png" alt="悟空形象">
+</section>
+
+<!-- 30 MCP 连接 -->
+<section class="slide" data-title="MCP 在康家佳品能连接什么">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">MCP CONNECTION MAP</div>
+        <h2 class="reveal d1">存量系统不用推倒重来，通过 MCP 即可“激活”</h2>
+        <div class="system-map">
+            <article class="system-card reveal d1"><b>金蝶云星空</b><p>采购、销售、库存、财务</p></article>
+            <article class="system-card reveal d1"><b>CRM</b><p>客户信息与销售记录</p></article>
+            <article class="system-card reveal d2"><b>客服工单</b><p>售后反馈与投诉数据</p></article>
+            <article class="system-card reveal d2"><b>WMS / 物流</b><p>订单、仓储与物流追踪</p></article>
+            <article class="system-card reveal d3"><b>钉钉全系</b><p>消息、日历、文档、审批</p></article>
+            <article class="system-card reveal d3"><b>知识库</b><p>产品文档、制度与项目复盘</p></article>
+        </div>
+        <div class="safety-box reveal d4" style="margin-top:26px;">具体系统是否已接入、支持哪些读写能力，需要以实际部署和授权为准。</div>
+    </div>
+</section>
+
+<!-- 31 金蝶 13 工具 -->
+<section class="slide" data-title="金蝶云星空 MCP 的 13 个核心工具">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">KINGDEE TOOLKIT</div>
+        <h2 class="reveal d1">连接 ERP 的“最后一公里”</h2>
+        <div class="tool-columns">
+            <article class="tool-group reveal d1"><h3>通用查询</h3><code>kingdee_query_bills</code><code>kingdee_view_bill</code><p class="small">支持任意 form_id 查询与完整详情查看。</p></article>
+            <article class="tool-group reveal d2"><h3>供应链</h3><code>kingdee_query_purchase_orders</code><code>kingdee_query_sale_orders</code><code>kingdee_query_stock_bills</code></article>
+            <article class="tool-group reveal d3"><h3>库存与资料</h3><code>kingdee_query_inventory</code><code>kingdee_query_materials</code><code>kingdee_query_partners</code></article>
+            <article class="tool-group reveal d4"><h3>单据操作</h3><code>kingdee_save_bill</code><code>kingdee_submit_bills</code><code>kingdee_audit_bills</code><code>kingdee_unaudit_bills</code><code>kingdee_delete_bills</code></article>
+        </div>
+        <div class="small" style="margin-top:18px;">Python 3.10+，金蝶官方 WebAPI 认证，AppSecret 凭证本地存储。</div>
+    </div>
+</section>
+
+<!-- 32 CLI 对比 -->
+<section class="slide" data-title="钉钉 CLI 为什么能做到">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">WHY CLI</div>
+        <h2 class="reveal d1">AI 操作软件的四种方式</h2>
+        <table class="cli-table reveal d2">
+            <thead><tr><th>方式</th><th>主要问题</th><th>稳定性</th></tr></thead>
+            <tbody>
+                <tr><td>RPA 模拟点击</td><td>界面一变就失效</td><td>依赖界面</td></tr>
+                <tr><td>传统 API</td><td>接口有限，每个系统不同</td><td>依赖集成</td></tr>
+                <tr><td>Chatbot 助手</td><td>不理解界面逻辑，容易猜错</td><td>只会回答</td></tr>
+                <tr class="best"><td>钉钉 CLI</td><td>从底层把功能表达成 AI 可理解命令</td><td>可组合执行</td></tr>
+            </tbody>
+        </table>
+        <div class="value-strip reveal d3"><b>本质</b> 从“给旧房加智能开关”，变成“从地基开始为 AI 设计”。</div>
+        <img class="mascot-corner reveal-scale d3" src="ppt-assets/悟空形象.png" alt="悟空形象">
+    </div>
+</section>
+
+<!-- 33 能力全景 -->
+<section class="slide" data-title="悟空 × 康家佳品能力全景">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">CAPABILITY PANORAMA</div>
+        <h2 class="reveal d1">一张图看懂四大板块的关键价值</h2>
+        <div class="panorama reveal d2">
+            <div class="head">板块</div><div class="head">核心场景</div><div class="head">关键价值</div><div class="head">代表工具</div>
+            <div class="row-title">经营管理</div><div>制度追踪、经营预警、财务对账</div><div>制度闭环，数据主动找人</div><div class="mono">query_purchase_orders<br>view_bill</div>
+            <div class="row-title">产品交付</div><div>售后→研发、知识库、库存与供应链</div><div>经验沉淀，异常响应</div><div class="mono">query_inventory<br>query_stock_bills</div>
+            <div class="row-title">品牌获客</div><div>内容创作、活动策划、新品协同</div><div>效率提升，信息同步</div><div>Skill + DWS</div>
+            <div class="row-title">渠道销售</div><div>拜访、画像、分析、订单与海外支持</div><div>销售更聪明，客户更满意</div><div class="mono">query_sale_orders<br>save_bill / audit_bills</div>
+        </div>
+    </div>
+</section>
+
+<!-- 34 互动 -->
+<section class="slide dark" data-title="互动：悟空能不能帮我做 XXX">
+    <div class="slide-inner" style="background:linear-gradient(135deg,#07182e,#0878ff);color:white;">
+        <div class="eyebrow reveal" style="color:var(--yellow);">07 / 互动</div>
+        <h2 class="reveal d1" style="color:white;font-size:76px;">“悟空能不能帮我做 XXX？”</h2>
+        <p class="lead reveal d1" style="color:#dfeeff;">请说出工作中最烦琐、最重复、最希望减少人工搬运的一个场景。</p>
+        <div class="grid-3">
+            <article class="card dark-card reveal d1"><div class="number">1</div><h3>你现在怎么做？</h3><p>涉及哪些系统、材料、判断和沟通？</p></article>
+            <article class="card dark-card reveal d2"><div class="number">2</div><h3>悟空能做到哪里？</h3><p>读取、整理、生成、执行，分别到什么边界？</p></article>
+            <article class="card dark-card reveal d3"><div class="number">3</div><h3>谁来确认结果？</h3><p>哪些动作必须由业务负责人授权？</p></article>
+        </div>
+        <div class="quote reveal d4" style="margin-top:34px;background:rgba(255,255,255,.1);color:white;">回去之后，你的第一个“悟空场景”是什么？</div>
+        <img class="mascot-corner reveal-scale d3" src="ppt-assets/悟空形象.png" alt="悟空形象">
+    </div>
+</section>
+
+<!-- 35 结语 -->
+<section class="slide closing-slide" data-title="从明天开始">
+    <div class="closing-copy">
+        <blockquote class="reveal">“过去是人用钉钉来工作，<br>未来是 AI 用钉钉来工作。”</blockquote>
+        <p class="reveal d1">不是学怎么操作，而是开始思考：<br><strong>哪些事，可以交给悟空做？</strong></p>
+        <div class="closing-action reveal d2">从明天开始，找到第一个可以交给悟空的任务。</div>
+    </div>
+</section>
+
+<!-- 36 附录 -->
+<section class="slide" data-title="附录：金蝶 MCP 配置快速参考">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">APPENDIX</div>
+        <h2 class="reveal d1">金蝶 MCP 配置快速参考</h2>
+        <div class="grid-2">
+            <article class="card reveal d2">
+                <h3>安装</h3>
+                <div class="code-panel"><span class="comment"># Python 3.10+</span><br><span class="cmd">pip install kingdee-mcp</span></div>
+                <div class="check-list" style="margin-top:24px;"><p>配置金蝶 WebAPI 账户</p><p>使用 AppSecret 方式认证</p><p>凭证保存在本地运行环境</p></div>
+            </article>
+            <article class="card blue-card reveal d3">
+                <h3>上线前检查</h3>
+                <ul><li>只开放所需账套、模块与动作</li><li>读取和写入权限分开验证</li><li>高风险单据动作保留人工确认</li><li>用真实脱敏数据做端到端测试</li></ul>
+                <p style="margin-top:22px;">13 个工具覆盖查询、库存、资料与单据操作。</p>
+            </article>
+        </div>
+        <div class="safety-box reveal d4" style="margin-top:28px;">原稿附录只给出安装命令；具体连接参数应以康家佳品的金蝶环境与权限方案为准。</div>
+    </div>
+</section>
+
+<!-- 37 附录：天眼查 MCP -->
+<section class="slide resource-slide" data-title="附录：天眼查 MCP">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">APPENDIX · OFFICIAL RESOURCE</div>
+        <h2 class="reveal d1">天眼查 MCP——把权威商业数据带入智能体</h2>
+        <p class="lead reveal d1">适合用于客户实体锚定、工商信息查询与拜访准备；当前官方入口同时提供 CLI、MCP 与 Skill 三种接入方式。</p>
+        <div class="resource-layout">
+            <article class="resource-identity reveal d2">
+                <div class="resource-no">RESOURCE 01</div>
+                <h3>天眼 AI<br>智能体数据平台</h3>
+                <p>锚定企业，再按需查询概要、明细与专业数据。</p>
+            </article>
+            <article class="resource-panel reveal d3">
+                <h3>官方入口</h3>
+                <a class="resource-url" href="https://ai.tianyancha.com/" target="_blank" rel="noopener noreferrer">https://ai.tianyancha.com/</a>
+                <div class="resource-features">
+                    <div class="resource-feature"><b>CLI 调用</b><p>通过天眼查 CLI 直接查询企业与商业信息。</p></div>
+                    <div class="resource-feature"><b>MCP 调用</b><p>让 AI 助手通过 MCP 协议访问相关工具。</p></div>
+                    <div class="resource-feature"><b>Skill 路由</b><p>按场景加载 Skill，减少无关工具占用上下文。</p></div>
+                </div>
+                <div class="resource-note">数据查询应先确认企业主体，并关注来源、更新时效与使用授权。</div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- 38 附录：钉钉 Workspace CLI -->
+<section class="slide resource-slide dark-resource" data-title="附录：钉钉 Workspace CLI">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">APPENDIX · OPEN SOURCE</div>
+        <h2 class="reveal d1">钉钉 Workspace CLI——为人和 AI Agent 设计</h2>
+        <p class="lead reveal d1">钉钉官方开源的跨平台命令行工具，将钉钉产品能力统一到一个可组合、可审计的执行入口。</p>
+        <div class="resource-layout">
+            <article class="resource-identity reveal d2">
+                <div class="resource-no">RESOURCE 02</div>
+                <h3>DingTalk<br>Workspace CLI</h3>
+                <p class="mono">dws</p>
+            </article>
+            <article class="resource-panel reveal d3">
+                <h3>官方开源仓库</h3>
+                <a class="resource-url" href="https://github.com/DingTalk-Real-AI/dingtalk-workspace-cli" target="_blank" rel="noopener noreferrer">github.com/DingTalk-Real-AI/dingtalk-workspace-cli</a>
+                <div class="resource-features">
+                    <div class="resource-feature"><b>面向使用者</b><p>帮助、预览请求与多种结构化输出格式。</p></div>
+                    <div class="resource-feature"><b>面向 Agent</b><p>结构化 JSON 响应与内置 Agent Skills。</p></div>
+                    <div class="resource-feature"><b>面向管理员</b><p>OAuth、域名白名单、最小权限与审计。</p></div>
+                </div>
+                <div class="resource-note"><span class="mono">npm install -g dingtalk-workspace-cli</span>　企业数据访问仍需管理员授权。</div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- 39 附录：钉钉 AI 能力中心 -->
+<section class="slide resource-slide" data-title="附录：钉钉 AI 能力中心">
+    <div class="slide-inner">
+        <div class="eyebrow reveal">APPENDIX · AI HUB</div>
+        <h2 class="reveal d1">钉钉 AI 能力中心</h2>
+        <p class="lead reveal d1">访问官方能力中心，查看当前页面提供的 AI 能力与相关入口；实际可用范围以企业权限和页面最新展示为准。</p>
+        <div class="resource-layout">
+            <article class="resource-identity reveal d2">
+                <div class="resource-no">RESOURCE 03</div>
+                <h3>AI 能力<br>统一入口</h3>
+                <p>从场景出发，找到适合团队的钉钉 AI 能力。</p>
+            </article>
+            <article class="resource-panel reveal d3">
+                <h3>官方入口</h3>
+                <a class="resource-url" href="https://aihub.dingtalk.com/#/" target="_blank" rel="noopener noreferrer">https://aihub.dingtalk.com/#/</a>
+                <div class="resource-features">
+                    <div class="resource-feature"><b>打开入口</b><p>在浏览器中直接访问钉钉 AI 能力中心。</p></div>
+                    <div class="resource-feature"><b>查看能力</b><p>以页面当前展示为准，了解可用能力和接入入口。</p></div>
+                    <div class="resource-feature"><b>匹配场景</b><p>结合高频、耗时、规则明确的任务选择首批场景。</p></div>
+                </div>
+                <div class="resource-note">能力展示与开放范围可能更新，培训现场建议直接打开官方页面确认。</div>
+            </article>
+        </div>
+    </div>
+</section>
+
+</main>
+</div>
+
+<!-- ===========================================
+     OUT-OF-STAGE CONTROLS
+     =========================================== -->
+<nav class="deck-controls" aria-label="演示控制">
+    <button id="prevBtn" title="上一页">←</button>
+    <span id="externalCount">01 / 39</span>
+    <button id="nextBtn" title="下一页">→</button>
+    <button id="overviewBtn" title="目录（O）">☰</button>
+    <button id="fullscreenBtn" title="全屏（F）">⛶</button>
+</nav>
+
+<div class="edit-hotzone" title="进入编辑模式"></div>
+<button class="edit-toggle" id="editToggle" title="编辑模式（E）">✎</button>
+<button class="download-toggle" id="downloadToggle" title="下载编辑后的 HTML">↓</button>
+
+<div class="overview" id="overview" aria-hidden="true">
+    <h2>演示目录</h2>
+    <div class="overview-grid" id="overviewGrid"></div>
+</div>
+
+<script>
+/* ===========================================
+   SLIDE PRESENTATION CONTROLLER
+   键盘、鼠标滚轮、点击、触控与视频暂停。
+   =========================================== */
+class SlidePresentation {
+    constructor() {
+        this.slides = Array.from(document.querySelectorAll(".slide"));
+        this.stage = document.getElementById("deckStage");
+        this.currentSlide = 0;
+        this.wheelLocked = false;
+        this.injectChrome();
+        this.buildOverview();
+        this.setupStageScale();
+        this.setupKeyboardNav();
+        this.setupTouchNav();
+        this.setupMouseNav();
+        var hashIndex = parseInt(location.hash.replace("#", ""), 10);
+        this.showSlide(Number.isFinite(hashIndex) ? hashIndex - 1 : 0, false);
+    }
+
+    injectChrome() {
+        var total = this.slides.length;
+        this.slides.forEach(function(slide, index) {
+            var logo = document.createElement("img");
+            logo.className = "brand-lockup";
+            logo.src = "ppt-assets/钉钉-logo.png";
+            logo.alt = "钉钉";
+            var deckId = document.createElement("div");
+            deckId.className = "deck-id";
+            deckId.textContent = "康家佳品 · 悟空专场";
+            var page = document.createElement("div");
+            page.className = "slide-number";
+            page.textContent = String(index + 1).padStart(2, "0") + " / " + String(total).padStart(2, "0");
+            slide.appendChild(logo);
+            slide.appendChild(deckId);
+            slide.appendChild(page);
+        });
+    }
+
+    setupStageScale() {
+        var self = this;
+        function scale() {
+            var factor = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+            var x = (window.innerWidth - 1920 * factor) / 2;
+            var y = (window.innerHeight - 1080 * factor) / 2;
+            self.stage.style.transform = "translate(" + x + "px," + y + "px) scale(" + factor + ")";
+        }
+        scale();
+        window.addEventListener("resize", scale);
+    }
+
+    setupKeyboardNav() {
+        var self = this;
+        document.addEventListener("keydown", function(event) {
+            if (document.body.classList.contains("editing") && event.target.getAttribute("contenteditable") === "true") return;
+            if (event.target.tagName === "VIDEO") return;
+            if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") { event.preventDefault(); self.next(); }
+            if (event.key === "ArrowLeft" || event.key === "PageUp") { event.preventDefault(); self.prev(); }
+            if (event.key === "Home") { event.preventDefault(); self.showSlide(0); }
+            if (event.key === "End") { event.preventDefault(); self.showSlide(self.slides.length - 1); }
+            if (event.key.toLowerCase() === "o") { event.preventDefault(); self.toggleOverview(); }
+            if (event.key.toLowerCase() === "f") { event.preventDefault(); self.toggleFullscreen(); }
+            if (event.key === "Escape") { self.closeOverview(); }
+        });
+    }
+
+    setupTouchNav() {
+        var self = this, startX = 0, startY = 0;
+        this.stage.addEventListener("touchstart", function(event) {
+            if (event.target.closest("video")) return;
+            startX = event.changedTouches[0].clientX;
+            startY = event.changedTouches[0].clientY;
+        }, {passive:true});
+        this.stage.addEventListener("touchend", function(event) {
+            if (event.target.closest("video")) return;
+            var dx = event.changedTouches[0].clientX - startX;
+            var dy = event.changedTouches[0].clientY - startY;
+            if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy)) dx < 0 ? self.next() : self.prev();
+        }, {passive:true});
+    }
+
+    setupMouseNav() {
+        var self = this;
+        this.stage.addEventListener("click", function(event) {
+            if (document.body.classList.contains("editing")) return;
+            if (event.target.closest("video,button,a")) return;
+            var rect = self.stage.getBoundingClientRect();
+            var localX = (event.clientX - rect.left) / rect.width;
+            if (localX < .18) self.prev();
+            if (localX > .82) self.next();
+        });
+        window.addEventListener("wheel", function(event) {
+            if (event.target.closest("video") || self.wheelLocked) return;
+            if (Math.abs(event.deltaY) < 18) return;
+            self.wheelLocked = true;
+            event.deltaY > 0 ? self.next() : self.prev();
+            setTimeout(function(){ self.wheelLocked = false; }, 520);
+        }, {passive:true});
+        document.getElementById("prevBtn").addEventListener("click", function(){ self.prev(); });
+        document.getElementById("nextBtn").addEventListener("click", function(){ self.next(); });
+        document.getElementById("overviewBtn").addEventListener("click", function(){ self.toggleOverview(); });
+        document.getElementById("fullscreenBtn").addEventListener("click", function(){ self.toggleFullscreen(); });
+    }
+
+    buildOverview() {
+        var self = this;
+        var grid = document.getElementById("overviewGrid");
+        this.slides.forEach(function(slide, index) {
+            var button = document.createElement("button");
+            button.innerHTML = "<b>" + String(index + 1).padStart(2, "0") + " / " + String(self.slides.length).padStart(2, "0") + "</b>" + slide.dataset.title;
+            button.addEventListener("click", function(){ self.showSlide(index); self.closeOverview(); });
+            grid.appendChild(button);
+        });
+    }
+
+    showSlide(index, updateHash) {
+        if (updateHash === undefined) updateHash = true;
+        this.currentSlide = Math.max(0, Math.min(index, this.slides.length - 1));
+        this.slides.forEach(function(slide, i) {
+            var active = i === this.currentSlide;
+            slide.classList.toggle("active", active);
+            slide.classList.toggle("visible", active);
+            if (!active) slide.querySelectorAll("video").forEach(function(video){ video.pause(); });
+        }, this);
+        document.getElementById("externalCount").textContent = String(this.currentSlide + 1).padStart(2, "0") + " / " + String(this.slides.length).padStart(2, "0");
+        if (updateHash) history.replaceState(null, "", "#" + (this.currentSlide + 1));
+    }
+
+    next() { this.showSlide(this.currentSlide + 1); }
+    prev() { this.showSlide(this.currentSlide - 1); }
+    toggleOverview() {
+        var panel = document.getElementById("overview");
+        panel.classList.toggle("open");
+        panel.setAttribute("aria-hidden", panel.classList.contains("open") ? "false" : "true");
+    }
+    closeOverview() {
+        var panel = document.getElementById("overview");
+        panel.classList.remove("open");
+        panel.setAttribute("aria-hidden", "true");
+    }
+    toggleFullscreen() {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(function(){});
+        else document.exitFullscreen();
+    }
+}
+
+/* ===========================================
+   INLINE TEXT EDITOR
+   E 键或左上角进入；自动保存到 localStorage；Ctrl+S 保存。
+   =========================================== */
+class InlineEditor {
+    constructor() {
+        this.isActive = false;
+        this.storageKey = "kangjiajiapin-wukong-deck-edits-v1";
+        this.targets = Array.from(document.querySelectorAll(".slide h1,.slide h2,.slide h3,.slide p,.slide li,.slide td,.slide th,.slide blockquote,.slide code"));
+        this.targets.forEach(function(el, index){ el.dataset.editKey = "text-" + index; });
+        this.restore();
+    }
+    toggleEditMode() {
+        this.isActive = !this.isActive;
+        document.body.classList.toggle("editing", this.isActive);
+        document.getElementById("editToggle").classList.toggle("active", this.isActive);
+        document.getElementById("downloadToggle").classList.toggle("active", this.isActive);
+        this.targets.forEach(function(el){ el.setAttribute("contenteditable", this.isActive ? "true" : "false"); }, this);
+        if (!this.isActive) this.save();
+    }
+    save() {
+        var data = {};
+        this.targets.forEach(function(el){ data[el.dataset.editKey] = el.innerHTML; });
+        localStorage.setItem(this.storageKey, JSON.stringify(data));
+    }
+    restore() {
+        try {
+            var data = JSON.parse(localStorage.getItem(this.storageKey) || "{}");
+            this.targets.forEach(function(el){ if (data[el.dataset.editKey] !== undefined) el.innerHTML = data[el.dataset.editKey]; });
+        } catch (error) {}
+    }
+    downloadEdited() {
+        this.save();
+        var clone = document.documentElement.cloneNode(true);
+        clone.querySelectorAll(".brand-lockup,.deck-id,.slide-number").forEach(function(el){ el.remove(); });
+        clone.querySelectorAll("[contenteditable]").forEach(function(el){ el.setAttribute("contenteditable","false"); });
+        clone.querySelectorAll(".slide").forEach(function(slide,index){ slide.classList.toggle("active", index===0); slide.classList.toggle("visible", index===0); });
+        clone.querySelector("body").classList.remove("editing");
+        var blob = new Blob(["<!DOCTYPE html>\n" + clone.outerHTML], {type:"text/html;charset=utf-8"});
+        var link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "康家佳品-悟空培训-已编辑.html";
+        link.click();
+        setTimeout(function(){ URL.revokeObjectURL(link.href); }, 1000);
+    }
+}
+
+var presentation = new SlidePresentation();
+var editor = new InlineEditor();
+
+/* ===========================================
+   EDIT UI WITH 400MS HOVER GRACE PERIOD
+   =========================================== */
+var hotzone = document.querySelector(".edit-hotzone");
+var editToggle = document.getElementById("editToggle");
+var downloadToggle = document.getElementById("downloadToggle");
+var hideTimeout = null;
+function showEditButtons() { clearTimeout(hideTimeout); editToggle.classList.add("show"); downloadToggle.classList.add("show"); }
+function hideEditButtons() {
+    hideTimeout = setTimeout(function(){
+        if (!editor.isActive) { editToggle.classList.remove("show"); downloadToggle.classList.remove("show"); }
+    }, 400);
+}
+hotzone.addEventListener("mouseenter", showEditButtons);
+hotzone.addEventListener("mouseleave", hideEditButtons);
+editToggle.addEventListener("mouseenter", showEditButtons);
+editToggle.addEventListener("mouseleave", hideEditButtons);
+downloadToggle.addEventListener("mouseenter", showEditButtons);
+downloadToggle.addEventListener("mouseleave", hideEditButtons);
+hotzone.addEventListener("click", function(){ editor.toggleEditMode(); });
+editToggle.addEventListener("click", function(){ editor.toggleEditMode(); });
+downloadToggle.addEventListener("click", function(){ editor.downloadEdited(); });
+document.addEventListener("keydown", function(event) {
+    if ((event.key === "e" || event.key === "E") && event.target.getAttribute("contenteditable") !== "true") editor.toggleEditMode();
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s" && editor.isActive) { event.preventDefault(); editor.save(); }
+});
+document.addEventListener("input", function(event){ if (editor.isActive && event.target.getAttribute("contenteditable") === "true") editor.save(); });
+</script>
+</body>
+</html>
