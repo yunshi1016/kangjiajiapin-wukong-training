@@ -215,6 +215,40 @@ svg {
     color: #546273;
     font: 600 20px var(--font-mono);
 }
+.source-title {
+    position: absolute;
+    right: 94px;
+    top: 116px;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 1180px;
+    min-height: 40px;
+    padding: 7px 16px 8px 8px;
+    border: 1px solid rgba(8,120,255,.22);
+    border-radius: 999px;
+    background: rgba(255,255,255,.92);
+    box-shadow: 0 8px 22px rgba(9,17,31,.08);
+    color: #30465f;
+    white-space: nowrap;
+}
+.source-title-label {
+    flex: 0 0 auto;
+    padding: 4px 10px 5px;
+    border-radius: 999px;
+    background: var(--blue);
+    color: white;
+    font: 800 15px var(--font-mono);
+    letter-spacing: .08em;
+}
+.source-title-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 20px;
+    line-height: 1.2;
+    font-weight: 800;
+}
 .slide.dark .brand-lockup,
 .slide.section-slide .brand-lockup,
 .slide.closing-slide .brand-lockup {
@@ -228,6 +262,20 @@ svg {
 .slide.cover-slide .slide-number,
 .slide.closing-slide .deck-id,
 .slide.closing-slide .slide-number { color: rgba(255,255,255,.76); }
+.slide.dark .source-title,
+.slide.section-slide .source-title,
+.slide.closing-slide .source-title {
+    border-color: rgba(255,255,255,.28);
+    background: rgba(4,34,77,.72);
+    box-shadow: 0 10px 28px rgba(0,0,0,.18);
+    color: white;
+}
+.slide.dark .source-title-label,
+.slide.section-slide .source-title-label,
+.slide.closing-slide .source-title-label {
+    background: var(--yellow);
+    color: var(--ink);
+}
 .slide-inner {
     position: relative;
     z-index: 3;
@@ -2050,6 +2098,47 @@ class SlidePresentation {
 
     injectChrome() {
         var total = this.slides.length;
+        /* Obsidian 原笔记中的逐页标题。P21 在源笔记中误写为 P22，
+           这里按标题出现顺序对应实际页面；新增资源附录沿用用户指定名称。 */
+        var notePageTitles = {
+            3: "本次培训定位 & 组织架构总览",
+            4: "三个核心技术概念（一句话介绍）",
+            5: "金蝶云星空 MCP——打通康家佳品核心业务系统",
+            6: "Skill——悟空的“专业技能包”",
+            7: "钉钉 CLI——悟空的“双手”",
+            8: "经营管理板块总览",
+            9: "场景 1——制度发文与落地追踪",
+            10: "场景 2——经营数据自动汇总与预警",
+            11: "场景 3——财务数据一键查询与对账（金蝶 MCP）",
+            12: "场景 4——通用单据查询与详情查看（金蝶 MCP）",
+            13: "产品交付板块总览",
+            14: "场景 1——售后问题自动分析 & 推动研发改进",
+            15: "场景 2——研发知识库与经验沉淀",
+            16: "场景 3——即时库存实时查询与预警（金蝶 MCP）",
+            17: "场景 4——供应链异常自动应对",
+            18: "场景 5——出入库单据查询与追踪（金蝶 MCP）",
+            19: "品牌获客板块总览",
+            20: "场景 1——内容创作与活动策划提效",
+            21: "场景 2——新品上市的跨部门协同",
+            22: "渠道销售板块总览",
+            23: "场景 1——客户拜访前的“AI 军师”",
+            24: "场景 2——客户历史交易一键调取（金蝶 MCP）",
+            25: "场景 3——销售数据分析与风险预警",
+            26: "场景 4——销售订单全流程 AI 操作（金蝶 MCP）",
+            27: "场景 5——订单到交付的全流程可视",
+            28: "场景 6——海外业务的跨时区/跨语言支持",
+            29: "三个核心技术能力回顾（一张图）",
+            30: "MCP 在康家佳品能连接什么？",
+            31: "金蝶云星空 MCP——连接 ERP 的“最后一公里”",
+            32: "钉钉 CLI——为什么能做到这些？",
+            33: "一张图总结——悟空×康家佳品能力全景",
+            34: "互动环节——“悟空能不能帮我做 XXX？”",
+            35: "结语",
+            36: "附录：金蝶 MCP 配置快速参考",
+            37: "附录：天眼查 MCP",
+            38: "附录：钉钉 Workspace CLI",
+            39: "附录：钉钉 AI 能力中心"
+        };
         this.slides.forEach(function(slide, index) {
             var logo = document.createElement("img");
             logo.className = "brand-lockup";
@@ -2064,6 +2153,20 @@ class SlidePresentation {
             slide.appendChild(logo);
             slide.appendChild(deckId);
             slide.appendChild(page);
+            var pageNo = index + 1;
+            if (notePageTitles[pageNo]) {
+                var sourceTitle = document.createElement("div");
+                sourceTitle.className = "source-title";
+                var sourceLabel = document.createElement("span");
+                sourceLabel.className = "source-title-label";
+                sourceLabel.textContent = "本页讲什么";
+                var sourceText = document.createElement("span");
+                sourceText.className = "source-title-text";
+                sourceText.textContent = notePageTitles[pageNo];
+                sourceTitle.appendChild(sourceLabel);
+                sourceTitle.appendChild(sourceText);
+                slide.appendChild(sourceTitle);
+            }
         });
     }
 
@@ -2208,7 +2311,7 @@ class InlineEditor {
     downloadEdited() {
         this.save();
         var clone = document.documentElement.cloneNode(true);
-        clone.querySelectorAll(".brand-lockup,.deck-id,.slide-number").forEach(function(el){ el.remove(); });
+        clone.querySelectorAll(".brand-lockup,.deck-id,.slide-number,.source-title").forEach(function(el){ el.remove(); });
         clone.querySelectorAll("[contenteditable]").forEach(function(el){ el.setAttribute("contenteditable","false"); });
         clone.querySelectorAll(".slide").forEach(function(slide,index){ slide.classList.toggle("active", index===0); slide.classList.toggle("visible", index===0); });
         clone.querySelector("body").classList.remove("editing");
