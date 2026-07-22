@@ -164,6 +164,10 @@ svg {
     .deck-controls {
         display: none !important;
     }
+
+    .asset-loader {
+        display: none !important;
+    }
 }
 
 /* 8. Reduced motion */
@@ -1251,6 +1255,80 @@ body:hover .deck-controls, .deck-controls:focus-within { opacity: 1; }
 .edit-toggle.show, .edit-toggle.active,
 .download-toggle.show, .download-toggle.active { opacity: 1; pointer-events: auto; }
 body.editing [contenteditable="true"] { outline: 2px dashed var(--yellow); outline-offset: 5px; cursor: text; }
+.asset-loader {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    width: min(390px, calc(100vw - 44px));
+    box-sizing: border-box;
+    padding: 16px 18px 15px;
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 16px;
+    background: rgba(7,14,25,.94);
+    color: #fff;
+    box-shadow: 0 18px 46px rgba(7,14,25,.28);
+    backdrop-filter: blur(16px);
+    z-index: 10020;
+    transition: opacity .35s ease, transform .35s ease, border-color .2s ease;
+}
+.asset-loader.is-hidden {
+    opacity: 0;
+    transform: translateY(18px);
+    pointer-events: none;
+}
+.asset-loader.is-error { border-color: rgba(255,190,0,.72); }
+.asset-loader-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 10px;
+}
+.asset-loader-title {
+    font-size: 15px;
+    line-height: 1.35;
+    font-weight: 800;
+    letter-spacing: .02em;
+}
+.asset-loader-count {
+    flex: 0 0 auto;
+    color: #9ecbff;
+    font: 700 12px var(--font-mono);
+}
+.asset-loader-track {
+    width: 100%;
+    height: 7px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255,255,255,.14);
+}
+.asset-loader-bar {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--blue), #31d9ff);
+    transition: width .2s ease;
+}
+.asset-loader.is-ready .asset-loader-bar { background: #24c875; }
+.asset-loader-meta {
+    margin-top: 9px;
+    color: #b8c6d9;
+    font-size: 12px;
+    line-height: 1.5;
+}
+.asset-loader-retry {
+    display: none;
+    margin-top: 11px;
+    padding: 7px 13px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--yellow);
+    color: var(--ink);
+    font-weight: 800;
+    cursor: pointer;
+}
+.asset-loader.is-error .asset-loader-retry { display: inline-block; }
 .overview {
     position: fixed;
     inset: 0;
@@ -1427,7 +1505,7 @@ body.editing [contenteditable="true"] { outline: 2px dashed var(--yellow); outli
             </div>
             <div class="video-frame reveal-scale d2">
                 <span class="video-label">真实录屏 · 点击播放</span>
-                <video controls playsinline preload="metadata" poster="ppt-assets/posters/制度发文.png"><source src="ppt-assets/video/制度发文.m4v" type="video/mp4"></video>
+                <video controls playsinline preload="none" poster="ppt-assets/posters/制度发文.png"><source src="ppt-assets/video/制度发文.m4v" type="video/mp4"></video>
             </div>
         </div>
     </div>
@@ -1533,7 +1611,7 @@ body.editing [contenteditable="true"] { outline: 2px dashed var(--yellow); outli
             </div>
             <div class="video-frame reveal-scale d2">
                 <span class="video-label">真实录屏 · 点击播放</span>
-                <video controls playsinline preload="metadata" poster="ppt-assets/posters/客诉分析.png"><source src="ppt-assets/video/客诉分析.m4v" type="video/mp4"></video>
+                <video controls playsinline preload="none" poster="ppt-assets/posters/客诉分析.png"><source src="ppt-assets/video/客诉分析.m4v" type="video/mp4"></video>
             </div>
         </div>
     </div>
@@ -1557,7 +1635,7 @@ body.editing [contenteditable="true"] { outline: 2px dashed var(--yellow); outli
             </div>
             <div class="video-frame reveal-scale d2">
                 <span class="video-label">真实录屏 · 点击播放</span>
-                <video controls playsinline preload="metadata" poster="ppt-assets/posters/知识整理.png"><source src="ppt-assets/video/知识整理.m4v" type="video/mp4"></video>
+                <video controls playsinline preload="none" poster="ppt-assets/posters/知识整理.png"><source src="ppt-assets/video/知识整理.m4v" type="video/mp4"></video>
             </div>
         </div>
     </div>
@@ -1666,7 +1744,7 @@ body.editing [contenteditable="true"] { outline: 2px dashed var(--yellow); outli
             </div>
             <div class="video-frame reveal-scale d2">
                 <span class="video-label">真实录屏 · 点击播放</span>
-                <video controls playsinline preload="metadata" poster="ppt-assets/posters/社媒内容.png"><source src="ppt-assets/video/社媒内容.m4v" type="video/mp4"></video>
+                <video controls playsinline preload="none" poster="ppt-assets/posters/社媒内容.png"><source src="ppt-assets/video/社媒内容.m4v" type="video/mp4"></video>
             </div>
         </div>
     </div>
@@ -1722,7 +1800,7 @@ body.editing [contenteditable="true"] { outline: 2px dashed var(--yellow); outli
             </div>
             <div class="video-frame reveal-scale d2">
                 <span class="video-label">真实录屏 · 点击播放</span>
-                <video controls playsinline preload="metadata" poster="ppt-assets/posters/拜访准备.png"><source src="ppt-assets/video/拜访准备.m4v" type="video/mp4"></video>
+                <video controls playsinline preload="none" poster="ppt-assets/posters/拜访准备.png"><source src="ppt-assets/video/拜访准备.m4v" type="video/mp4"></video>
             </div>
         </div>
     </div>
@@ -1829,7 +1907,7 @@ body.editing [contenteditable="true"] { outline: 2px dashed var(--yellow); outli
             </div>
             <div class="video-frame reveal-scale d2">
                 <span class="video-label">真实录屏 · 点击播放</span>
-                <video controls playsinline preload="metadata" poster="ppt-assets/posters/报价翻译.png"><source src="ppt-assets/video/报价翻译.m4v" type="video/mp4"></video>
+                <video controls playsinline preload="none" poster="ppt-assets/posters/报价翻译.png"><source src="ppt-assets/video/报价翻译.m4v" type="video/mp4"></video>
             </div>
         </div>
     </div>
@@ -2053,6 +2131,16 @@ body.editing [contenteditable="true"] { outline: 2px dashed var(--yellow); outli
 <div class="edit-hotzone" title="进入编辑模式"></div>
 <button class="edit-toggle" id="editToggle" title="编辑模式（E）">✎</button>
 <button class="download-toggle" id="downloadToggle" title="下载编辑后的 HTML">↓</button>
+
+<aside class="asset-loader" id="assetLoader" aria-live="polite" aria-label="素材加载状态">
+    <div class="asset-loader-head">
+        <span class="asset-loader-title" id="assetLoaderTitle">正在准备培训素材</span>
+        <span class="asset-loader-count" id="assetLoaderCount">0%</span>
+    </div>
+    <div class="asset-loader-track" aria-hidden="true"><span class="asset-loader-bar" id="assetLoaderBar"></span></div>
+    <div class="asset-loader-meta" id="assetLoaderMeta">正在检查全部图片与视频，请稍候…</div>
+    <button class="asset-loader-retry" id="assetLoaderRetry" type="button">重新加载失败素材</button>
+</aside>
 
 <div class="overview" id="overview" aria-hidden="true">
     <h2>演示目录</h2>
@@ -2292,6 +2380,12 @@ class InlineEditor {
         this.save();
         var clone = document.documentElement.cloneNode(true);
         clone.querySelectorAll(".brand-lockup,.deck-id,.slide-number,.source-title").forEach(function(el){ el.remove(); });
+        clone.querySelectorAll("video").forEach(function(video){
+            video.removeAttribute("src");
+            delete video.dataset.originalSrc;
+            delete video.dataset.preloaded;
+            delete video.dataset.blobUrl;
+        });
         clone.querySelectorAll("[contenteditable]").forEach(function(el){ el.setAttribute("contenteditable","false"); });
         clone.querySelectorAll(".slide").forEach(function(slide,index){ slide.classList.toggle("active", index===0); slide.classList.toggle("visible", index===0); });
         clone.querySelector("body").classList.remove("editing");
@@ -2306,6 +2400,254 @@ class InlineEditor {
 
 var presentation = new SlidePresentation();
 var editor = new InlineEditor();
+
+/* ===========================================
+   ASSET PRELOADER
+   先缓存全部图片，再完整下载 6 段视频到当前标签页的 Blob URL。
+   加载失败会自动重试，并保留手动重试入口。
+   =========================================== */
+class AssetPreloader {
+    constructor() {
+        this.panel = document.getElementById("assetLoader");
+        this.title = document.getElementById("assetLoaderTitle");
+        this.count = document.getElementById("assetLoaderCount");
+        this.bar = document.getElementById("assetLoaderBar");
+        this.meta = document.getElementById("assetLoaderMeta");
+        this.retryButton = document.getElementById("assetLoaderRetry");
+        this.videos = Array.from(document.querySelectorAll("video"));
+        this.readyImages = new Set();
+        this.readyVideos = new Set();
+        this.failedImages = new Set();
+        this.failedVideos = new Set();
+        this.running = false;
+        this.hideTimer = null;
+        this.imageUrls = this.collectImageUrls();
+        this.prepareVideos();
+        this.retryButton.addEventListener("click", this.run.bind(this));
+        window.addEventListener("beforeunload", this.releaseBlobUrls.bind(this));
+        this.run();
+    }
+
+    collectImageUrls() {
+        var urls = Array.from(document.images).map(function(image){ return image.currentSrc || image.src; });
+        this.videos.forEach(function(video){ if (video.poster) urls.push(video.poster); });
+        return Array.from(new Set(urls.filter(Boolean)));
+    }
+
+    prepareVideos() {
+        this.videos.forEach(function(video) {
+            var source = video.querySelector("source");
+            var rawUrl = video.getAttribute("src") || (source && source.getAttribute("src"));
+            if (!rawUrl) return;
+            video.dataset.originalSrc = new URL(rawUrl, location.href).href;
+        });
+    }
+
+    sleep(ms) {
+        return new Promise(function(resolve){ setTimeout(resolve, ms); });
+    }
+
+    async withRetry(task, attempts) {
+        var lastError;
+        for (var attempt = 1; attempt <= attempts; attempt += 1) {
+            try { return await task(attempt); }
+            catch (error) {
+                lastError = error;
+                if (attempt < attempts) await this.sleep(700 * attempt);
+            }
+        }
+        throw lastError;
+    }
+
+    loadImage(url) {
+        return new Promise(function(resolve, reject) {
+            var image = new Image();
+            var timer = setTimeout(function(){ cleanup(); reject(new Error("图片加载超时")); }, 30000);
+            function cleanup() {
+                clearTimeout(timer);
+                image.onload = null;
+                image.onerror = null;
+            }
+            image.onload = function(){ cleanup(); resolve(); };
+            image.onerror = function(){ cleanup(); reject(new Error("图片加载失败")); };
+            image.decoding = "async";
+            image.src = url;
+            if (image.complete && image.naturalWidth > 0) { cleanup(); resolve(); }
+        });
+    }
+
+    async runPool(items, limit, worker) {
+        var cursor = 0;
+        async function runner() {
+            while (cursor < items.length) {
+                var index = cursor;
+                cursor += 1;
+                await worker(items[index], index);
+            }
+        }
+        var runners = [];
+        for (var i = 0; i < Math.min(limit, items.length); i += 1) runners.push(runner());
+        await Promise.all(runners);
+    }
+
+    setProgress(title, meta, fraction) {
+        var percent = Math.max(0, Math.min(100, Math.round(fraction * 100)));
+        this.title.textContent = title;
+        this.meta.textContent = meta;
+        this.count.textContent = percent + "%";
+        this.bar.style.width = percent + "%";
+    }
+
+    async preloadImages() {
+        var self = this;
+        var completed = this.readyImages.size;
+        var total = this.imageUrls.length;
+        await this.runPool(this.imageUrls.filter(function(url){ return !self.readyImages.has(url); }), 6, async function(url) {
+            try {
+                await self.withRetry(function(){ return self.loadImage(url); }, 3);
+                self.readyImages.add(url);
+                self.failedImages.delete(url);
+            } catch (error) {
+                self.failedImages.add(url);
+            }
+            completed = self.readyImages.size + self.failedImages.size;
+            self.setProgress(
+                "正在加载全部图片",
+                "图片与视频封面 " + completed + " / " + total + "，失败项会自动重试",
+                total ? (completed / total) * .35 : .35
+            );
+        });
+    }
+
+    async fetchVideoBlob(video, videoIndex, totalVideos) {
+        var url = video.dataset.originalSrc;
+        if (!url) throw new Error("缺少视频地址");
+        var controller = new AbortController();
+        var timeout = setTimeout(function(){ controller.abort(); }, 120000);
+        try {
+            var response = await fetch(url, {cache: "force-cache", signal: controller.signal});
+            if (!response.ok) throw new Error("视频请求失败：" + response.status);
+            var totalBytes = Number(response.headers.get("Content-Length")) || 0;
+            var loadedBytes = 0;
+            var blob;
+            if (response.body && response.body.getReader) {
+                var reader = response.body.getReader();
+                var chunks = [];
+                while (true) {
+                    var part = await reader.read();
+                    if (part.done) break;
+                    chunks.push(part.value);
+                    loadedBytes += part.value.byteLength;
+                    var partFraction = totalBytes ? loadedBytes / totalBytes : .2;
+                    var fileName = decodeURIComponent(url.split("/").pop()).replace(/\.m4v$/i, "");
+                    var sizeLabel = totalBytes
+                        ? (loadedBytes / 1048576).toFixed(1) + " / " + (totalBytes / 1048576).toFixed(1) + " MB"
+                        : (loadedBytes / 1048576).toFixed(1) + " MB";
+                    this.setProgress(
+                        "正在缓存视频 " + (videoIndex + 1) + " / " + totalVideos,
+                        fileName + " · " + sizeLabel + " · 全部视频约 33 MB",
+                        .35 + ((videoIndex + partFraction) / totalVideos) * .65
+                    );
+                }
+                blob = new Blob(chunks, {type: response.headers.get("Content-Type") || "video/mp4"});
+            } else {
+                blob = await response.blob();
+            }
+            return blob;
+        } finally {
+            clearTimeout(timeout);
+        }
+    }
+
+    waitForVideoReady(video) {
+        if (video.readyState >= 1) return Promise.resolve();
+        return new Promise(function(resolve, reject) {
+            var timer = setTimeout(function(){ cleanup(); reject(new Error("视频解析超时")); }, 20000);
+            function cleanup() {
+                clearTimeout(timer);
+                video.removeEventListener("loadedmetadata", onReady);
+                video.removeEventListener("error", onError);
+            }
+            function onReady() { cleanup(); resolve(); }
+            function onError() { cleanup(); reject(new Error("视频解析失败")); }
+            video.addEventListener("loadedmetadata", onReady, {once:true});
+            video.addEventListener("error", onError, {once:true});
+        });
+    }
+
+    async cacheVideo(video, videoIndex, totalVideos) {
+        if (location.protocol === "file:") {
+            video.preload = "auto";
+            video.load();
+            await this.waitForVideoReady(video);
+            video.dataset.preloaded = "true";
+            return;
+        }
+        var blob = await this.fetchVideoBlob(video, videoIndex, totalVideos);
+        var blobUrl = URL.createObjectURL(blob);
+        if (video.dataset.blobUrl) URL.revokeObjectURL(video.dataset.blobUrl);
+        video.dataset.blobUrl = blobUrl;
+        video.src = blobUrl;
+        video.preload = "auto";
+        video.load();
+        await this.waitForVideoReady(video);
+        video.dataset.preloaded = "true";
+    }
+
+    async preloadVideos() {
+        var total = this.videos.length;
+        for (var index = 0; index < total; index += 1) {
+            var video = this.videos[index];
+            if (this.readyVideos.has(video)) continue;
+            try {
+                await this.withRetry(this.cacheVideo.bind(this, video, index, total), 3);
+                this.readyVideos.add(video);
+                this.failedVideos.delete(video);
+            } catch (error) {
+                this.failedVideos.add(video);
+            }
+            this.setProgress(
+                "正在缓存视频 " + Math.min(index + 1, total) + " / " + total,
+                "已完成 " + (this.readyVideos.size + this.failedVideos.size) + " 段 · 首次打开约需下载 33 MB",
+                .35 + ((index + 1) / Math.max(total, 1)) * .65
+            );
+        }
+    }
+
+    async run() {
+        if (this.running) return;
+        this.running = true;
+        clearTimeout(this.hideTimer);
+        this.panel.classList.remove("is-hidden", "is-ready", "is-error");
+        this.failedImages.clear();
+        this.failedVideos.clear();
+        this.setProgress("正在准备培训素材", "先加载全部图片，再缓存 6 段视频", 0);
+        await this.preloadImages();
+        await this.preloadVideos();
+        this.running = false;
+        var failureCount = this.failedImages.size + this.failedVideos.size;
+        if (failureCount > 0) {
+            this.panel.classList.add("is-error");
+            this.setProgress(
+                "有 " + failureCount + " 个素材未能加载",
+                "请检查网络后点击重试；若持续失败，可能是当前网络限制访问 GitHub Pages。",
+                (this.readyImages.size + this.readyVideos.size) / Math.max(this.imageUrls.length + this.videos.length, 1)
+            );
+            return;
+        }
+        this.panel.classList.add("is-ready");
+        this.setProgress("全部素材已就绪", "39 页图片与 6 段视频已缓存，本次打开可直接播放。", 1);
+        this.hideTimer = setTimeout(function(){ this.panel.classList.add("is-hidden"); }.bind(this), 4500);
+    }
+
+    releaseBlobUrls() {
+        this.videos.forEach(function(video){
+            if (video.dataset.blobUrl) URL.revokeObjectURL(video.dataset.blobUrl);
+        });
+    }
+}
+
+var assetPreloader = new AssetPreloader();
 
 /* ===========================================
    EDIT UI WITH 400MS HOVER GRACE PERIOD
