@@ -3,3 +3,16 @@ dist/
 .DS_Store
 test-results/
 playwright-report/
+
+# Independent OpenAI Sites deployment repository
+sites-public/
+
+# OpenYida local runtime and generated artifacts
+project/.cache/
+project/pages/build/
+project/pages/dist/
+
+# OpenYida starter examples copied by the CLI
+project/pages/src/demo-*.oyd.jsx
+project/pages/src/openyida-knowledge-doc.oyd.jsx
+project/prd/demo-*.md
