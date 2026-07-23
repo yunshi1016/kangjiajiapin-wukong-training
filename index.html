@@ -181,7 +181,7 @@ svg {
 }
 
 /* ===========================================
-   SLIDE CHROME — 每页自动插入钉钉 Logo、章节与页码
+   SLIDE CHROME — 每页自动插入钉钉/康家佳品 Logo、章节与页码
    =========================================== */
 .slide::before {
     content: "";
@@ -201,6 +201,28 @@ svg {
     width: 350px;
     height: auto;
     z-index: 20;
+}
+.company-brand {
+    position: absolute;
+    left: 470px;
+    top: 46px;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 250px;
+    height: 70px;
+    padding: 8px 16px;
+    border: 1px solid rgba(8,120,255,.18);
+    border-radius: 14px;
+    background: rgba(255,255,255,.96);
+    box-shadow: 0 8px 24px rgba(9,17,31,.10);
+}
+.company-logo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 .deck-id {
     position: absolute;
@@ -2216,6 +2238,13 @@ class SlidePresentation {
             logo.className = "brand-lockup";
             logo.src = "ppt-assets/钉钉-logo.png";
             logo.alt = "钉钉";
+            var companyBrand = document.createElement("div");
+            companyBrand.className = "company-brand";
+            var companyLogo = document.createElement("img");
+            companyLogo.className = "company-logo";
+            companyLogo.src = "ppt-assets/康家佳品-logo.png";
+            companyLogo.alt = "康家佳品";
+            companyBrand.appendChild(companyLogo);
             var deckId = document.createElement("div");
             deckId.className = "deck-id";
             deckId.textContent = "康家佳品 · 悟空专场";
@@ -2223,6 +2252,7 @@ class SlidePresentation {
             page.className = "slide-number";
             page.textContent = String(index + 1).padStart(2, "0") + " / " + String(total).padStart(2, "0");
             slide.appendChild(logo);
+            slide.appendChild(companyBrand);
             slide.appendChild(deckId);
             slide.appendChild(page);
             var pageNo = index + 1;
@@ -2379,7 +2409,7 @@ class InlineEditor {
     downloadEdited() {
         this.save();
         var clone = document.documentElement.cloneNode(true);
-        clone.querySelectorAll(".brand-lockup,.deck-id,.slide-number,.source-title").forEach(function(el){ el.remove(); });
+        clone.querySelectorAll(".brand-lockup,.company-brand,.deck-id,.slide-number,.source-title").forEach(function(el){ el.remove(); });
         clone.querySelectorAll("video").forEach(function(video){
             video.removeAttribute("src");
             delete video.dataset.originalSrc;
