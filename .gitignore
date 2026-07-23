@@ -4,6 +4,9 @@ dist/
 test-results/
 playwright-report/
 
+# Independent OpenAI Sites deployment repository
+sites-public/
+
 # OpenYida local runtime and generated artifacts
 project/.cache/
 project/pages/build/
